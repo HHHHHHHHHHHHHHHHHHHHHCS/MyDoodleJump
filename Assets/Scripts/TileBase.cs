@@ -2,17 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TileType
-{
-    NormalTile = 0,
-    BrokenTile,
-    OnceTile,
-    SpringTile,
-    MoveHorTile,
-    MoveVerTile,
-}
-
-
 public class TileBase : MonoBehaviour
 {
     private const float downSpeed = 20;

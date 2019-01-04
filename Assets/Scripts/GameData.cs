@@ -2,36 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameData : MonoBehaviour
+public enum ObjectType
 {
-    private static GameData instance;
+    Tile = 0,
+    Item,
+    Coin,
+    Enemy,
+    Bullet,
+}
 
-    public static GameData Instance
-    {
-        get
-        {
-            if (!instance)
-            {
-                instance = GameObject.Find("GameData").GetComponent<GameData>();
-
-            }
-            return instance;
-        }
-        private set
-        {
-            instance = value;
-        }
-    }
-
-
+public class GameData : MonoSingleton<GameData>
+{
     public Sprite[] titleSprite;
+    public NormalTile normalTile;
+    public BrokenTile brokenTile;
+    public OnceTile onceTile;
+    public SpringTile springTile;
+    public MoveHorTile moveHorTile;
+    public MoveVerTile moveVerTile;
 
-    private void Awake()
+
+    static GameData()
     {
-        if (!instance)
-        {
-            Instance = this;
-        }
+        singletonPath = "GameData";
     }
 }
 

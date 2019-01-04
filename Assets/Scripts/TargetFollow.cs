@@ -10,30 +10,33 @@ public class TargetFollow : MonoBehaviour
     private float damoTime = 0.5f;
 
     private Camera mainCam;
-    private Vector3 velocity, lastPos;
+    private Vector3 velocity, destination;
+    private float lastTargetY;
 
     private void Awake()
     {
         mainCam = Camera.main;
+        destination = Vector3.one * float.MinValue;
+        lastTargetY = float.MinValue;
     }
 
     private void Update()
     {
-        if (target)
+        if (target && target.position.y > lastTargetY)
         {
+            lastTargetY = target.position.y;
             var pos = mainCam.WorldToViewportPoint(target.position);
             var delta = target.position - mainCam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, pos.z));
-            Vector3 destination = transform.position;
-            destination.y += delta.y;
-            if (destination.y > lastPos.y)
-            {
-                lastPos = destination;
-            }
-            if (lastPos.y > transform.position.y)
-            {
-                transform.position = Vector3.SmoothDamp(lastPos, destination, ref velocity, damoTime);
-            }
 
+            if (delta.y > 0)
+            {
+                destination = transform.position;
+                destination.y += delta.y;
+            }
+        }
+        if (transform.position.y < destination.y)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, damoTime);
         }
     }
 }
