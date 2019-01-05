@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPool<T> where T : Object
+public class ObjectPool<T> where T : Component
 {
     private T prefab;
     private Transform parent;
@@ -30,6 +30,7 @@ public class ObjectPool<T> where T : Object
             objPool.Enqueue(item);
         }
     }
+
 
     private T Instantiate()
     {

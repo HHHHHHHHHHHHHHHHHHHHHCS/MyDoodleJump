@@ -20,12 +20,16 @@ public class TileBase : MonoBehaviour
         col2D = GetComponent<BoxCollider2D>();
     }
 
-    private void Start()
+    public void Init(TileType type ,Vector2 pos)
     {
-        Init();
+        titleType = type;
+        transform.position = pos;
+        Active();
+        gameObject.SetActive(true);
     }
 
-    public void Init()
+
+    public void Active()
     {
         col2D.enabled = true;
         var sprites = GameData.Instance.titleSprite;
@@ -79,7 +83,7 @@ public class TileBase : MonoBehaviour
 
     private IEnumerator Down()
     {
-        while(true)
+        while (true)
         {
             var pos = transform.localPosition;
             pos.y -= downSpeed * Time.deltaTime;

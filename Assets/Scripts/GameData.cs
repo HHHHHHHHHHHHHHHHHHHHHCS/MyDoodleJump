@@ -13,6 +13,9 @@ public enum ObjectType
 
 public class GameData : MonoSingleton<GameData>
 {
+    public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
+    public const float startTilePosY = -4;
+
     public Sprite[] titleSprite;
     public NormalTile normalTile;
     public BrokenTile brokenTile;
@@ -21,11 +24,22 @@ public class GameData : MonoSingleton<GameData>
     public MoveHorTile moveHorTile;
     public MoveVerTile moveVerTile;
 
+    private float sumAllWeight;
+
+    public float SumAllWeight { get => sumAllWeight; }
 
     static GameData()
     {
         singletonPath = "GameData";
     }
+
+    protected override void OnAwake()
+    {
+        sumAllWeight = normalTile.weight + brokenTile.weight + onceTile.weight
+            + springTile.weight + moveHorTile.weight + moveVerTile.weight;
+    }
+
+
 }
 
 public class Tags

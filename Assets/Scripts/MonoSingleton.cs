@@ -6,27 +6,27 @@ public abstract class MonoSingleton<T> : MonoBehaviour
     where T : MonoBehaviour
 {
     protected static string singletonPath;
-    protected static T instance;
+    protected static T _instance;
 
     public static T Instance
     {
         get
         {
-            if (!instance && !string.IsNullOrEmpty(singletonPath))
+            if (!_instance && !string.IsNullOrEmpty(singletonPath))
             {
-                instance = GameObject.Find(singletonPath).GetComponent<T>();
+                _instance = GameObject.Find(singletonPath).GetComponent<T>();
             }
-            return instance;
+            return _instance;
         }
         protected set
         {
-            instance = value;
+            _instance = value;
         }
     }
 
     protected void Awake()
     {
-        if (!instance)
+        if (!_instance)
         {
             Instance = this as T;
         }
