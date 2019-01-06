@@ -7,12 +7,15 @@ public class TileBase : MonoBehaviour
     private const float downSpeed = 20;
 
     [SerializeField]
-    private TileType titleType;
+    private TileType tileType;
 
 
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D col2D;
     private Coroutine coroutine;
+    private bool isDown;
+    private int moveDir;//-1 左下, 1 右上
+    private Vector2 startPos;
 
     private void Awake()
     {
@@ -20,20 +23,81 @@ public class TileBase : MonoBehaviour
         col2D = GetComponent<BoxCollider2D>();
     }
 
-    public void Init(TileType type ,Vector2 pos)
+    private void Update()
     {
-        titleType = type;
+        switch (tileType)
+        {
+            case TileType.MoveHorTile:
+                {
+
+
+                    var moveHorTile = GameData.Instance.moveHorTile;
+                    Vector2 newPos = Vector2.zero;
+                    newPos.x = moveDir * moveHorTile.speed * Time.deltaTime;
+                    transform.Translate(newPos);
+                    if (transform.position.x - startPos.x >= moveHorTile.distance)
+                    {
+                        moveDir = -1;
+                    }
+                    else if (transform.position.x - startPos.x <= -moveHorTile.distance)
+                    {
+                        moveDir = 1;
+                    }
+                    break;
+                }
+            case TileType.MoveVerTile:
+                {
+                    var moveVerTile = GameData.Instance.moveVerTile;
+                    Vector2 newPos = Vector2.zero;
+                    newPos.y = moveDir * moveVerTile.speed * Time.deltaTime;
+                    transform.Translate(newPos);
+                    if (transform.position.y - startPos.y >= moveVerTile.distance)
+                    {
+                        moveDir = -1;
+                    }
+                    else if (transform.position.y - startPos.y <= -moveVerTile.distance)
+                    {
+                        moveDir = 1;
+                    }
+                    break;
+                }
+        }
+    }
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public void Init(TileType type, Vector2 pos)
+    {
+        tileType = type;
+        startPos = pos;
+        if (tileType == TileType.MoveHorTile || tileType == TileType.MoveVerTile)
+        {
+            moveDir = Random.value < 0.5f ? -1 : 1;
+        }
         transform.position = pos;
         Active();
         gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// 回收
+    /// </summary>
+    public void Recovery()
+    {
+        gameObject.SetActive(false);
+        StopFallDown();
+    }
 
+
+    /// <summary>
+    /// 重新激活方块
+    /// </summary>
     public void Active()
     {
         col2D.enabled = true;
         var sprites = GameData.Instance.titleSprite;
-        int type = (int)titleType;
+        int type = (int)tileType;
         if (type < sprites.Length)
         {
             spriteRenderer.sprite = sprites[type];
@@ -51,7 +115,7 @@ public class TileBase : MonoBehaviour
         {
             var player = collision.GetComponent<Player>();
             float jumpScale = 1;
-            switch (titleType)
+            switch (tileType)
             {
                 case TileType.NormalTile:
                     break;
@@ -75,20 +139,48 @@ public class TileBase : MonoBehaviour
         }
     }
 
-    private void FallDown()
+    /// <summary>
+    /// 掉落用
+    /// </summary>
+    public void FallDown()
     {
+        StopFallDown();
         col2D.enabled = false;
+        isDown = true;
         coroutine = StartCoroutine(Down());
     }
 
+    /// <summary>
+    /// 暂停下落
+    /// </summary>
+    public void StopFallDown()
+    {
+        if (coroutine != null)
+        {
+            isDown = false;
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
+    }
+
+    /// <summary>
+    /// 下降
+    /// </summary>
     private IEnumerator Down()
     {
-        while (true)
+        while (isDown)
         {
+            if (GameManager.Instance.NeedRecoveryTile(this))
+            {
+                StopFallDown();
+                yield break;
+            }
             var pos = transform.localPosition;
             pos.y -= downSpeed * Time.deltaTime;
             transform.localPosition = pos;
             yield return null;
         }
     }
+
+
 }

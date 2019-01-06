@@ -2,32 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//BUG:竖板没有生成
 public class GameManager : MonoSingleton<GameManager>
 {
+    /// <summary>
+    /// 初始化对象池的大小
+    /// </summary>
     private const int initTileSize = 20;
-
+    /// <summary>
+    /// 装块回收Y
+    /// </summary>
+    private const float recoveryTileY = 15;
 
     public TileBase tilePrefab;
     public Transform tileParent;
 
+    private List<TileBase> showTileList;
     private ObjectPool<TileBase> tilePool;
     private ObjectPool<Transform> coinPool;
     private ObjectPool<Transform> bulletPool;
     private ObjectPool<Transform> enemyPool;
     private ObjectPool<Transform> itemPool;
 
+    /// <summary>
+    /// 当前跳板的位置
+    /// </summary>
     private float currentTilePosY = GameData.startTilePosY;
+    /// <summary>
+    /// 跳板最后要回收的位置
+    /// </summary>
+    private float recoverY = float.MinValue;
 
     protected override void OnAwake()
     {
+        showTileList = new List<TileBase>();
         tilePool = new ObjectPool<TileBase>(tilePrefab, 20);
     }
 
     private void Start()
     {
-        for (int i= 0;i < 60;i++)
+        for (int i = 0; i < 60; i++)
         {
-            SpawnNewTile();
+            showTileList.Add(SpawnNewTile());
         }
     }
 
@@ -42,7 +58,7 @@ public class GameManager : MonoSingleton<GameManager>
         switch (tileType)
         {
             case TileType.NormalTile:
-                pos.y = Random.Range(data.normalTile.minHeight,data.normalTile.maxHeight);
+                pos.y = Random.Range(data.normalTile.minHeight, data.normalTile.maxHeight);
                 break;
             case TileType.BrokenTile:
                 pos.y = Random.Range(data.brokenTile.minHeight, data.brokenTile.maxHeight);
@@ -120,5 +136,47 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// 判断跳板是否需要回收
+    /// </summary>
+    public bool NeedRecoveryTile(TileBase tile)
+    {
+        if (tile.transform.position.y > recoverY)
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+    /// <summary>
+    /// 回收跳板用
+    /// </summary>
+    public void RecoveryTile(float nowY)
+    {
+        recoverY = nowY - recoveryTileY;
+        int removeIndex = -1;
+        int count = showTileList.Count - 1;
+        for (int i = 0; i < showTileList.Count; i++)
+        {
+            if (!NeedRecoveryTile(showTileList[i]))
+            {
+                removeIndex = i - 1;
+                break;
+            }
+            else if (i == count)
+            {
+                removeIndex = count;
+            }
+        }
+        for (int i = 0; i < removeIndex; i++)
+        {
+            var tempTile = showTileList[0];
+            tempTile.Recovery();
+            tilePool.Put(tempTile);
+            showTileList.RemoveAt(0);
+        }
     }
 }
