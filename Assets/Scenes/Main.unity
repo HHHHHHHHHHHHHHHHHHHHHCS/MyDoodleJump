@@ -304,8 +304,8 @@ MonoBehaviour:
   moveVerTile:
     minHeight: 1.4
     maxHeight: 2.6
-    weight: 2
-    distance: 10
+    weight: 10
+    distance: 2
     speed: 0.7
 --- !u!4 &346863173
 Transform:

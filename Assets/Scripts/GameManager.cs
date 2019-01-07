@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//BUG:竖板没有生成
 public class GameManager : MonoSingleton<GameManager>
 {
     /// <summary>
@@ -12,7 +11,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// <summary>
     /// 装块回收Y
     /// </summary>
-    private const float recoveryTileY = 15;
+    private const float recoveryTileY = 12.5f;
 
     public TileBase tilePrefab;
     public Transform tileParent;
@@ -28,22 +27,59 @@ public class GameManager : MonoSingleton<GameManager>
     /// 当前跳板的位置
     /// </summary>
     private float currentTilePosY = GameData.startTilePosY;
+
+
+    /// <summary>
+    /// 游戏状态
+    /// </summary>
+    public GameState GameState { get; private set; }
+
     /// <summary>
     /// 跳板最后要回收的位置
     /// </summary>
-    private float recoverY = float.MinValue;
+    public float RecoverY { get; private set; } = float.MinValue;
+
+    /// <summary>
+    /// 玩家
+    /// </summary>
+    public Player Player { get; private set; }
 
     protected override void OnAwake()
     {
+        Player = GameObject.Find("Player").GetComponent<Player>();
         showTileList = new List<TileBase>();
         tilePool = new ObjectPool<TileBase>(tilePrefab, 20);
     }
 
     private void Start()
     {
-        for (int i = 0; i < 60; i++)
+        for (int i = 0; i < 20; i++)
         {
-            showTileList.Add(SpawnNewTile());
+            SpawnNewTile();
+        }
+    }
+
+    private void Update()
+    {
+        if (GameState == GameState.Ready)
+        {
+            if (Input.GetMouseButtonUp(0)
+                || Input.GetKey(KeyCode.A)
+                || Input.GetKey(KeyCode.D))
+            {
+                GameState = GameState.Running;
+                Player.Resume();
+            }
+        }
+
+        if (GameState != GameState.Running)
+        {
+            return;
+        }
+
+        foreach (var tile in showTileList)
+        {
+            tile.OnUpdate();
         }
     }
 
@@ -89,6 +125,8 @@ public class GameManager : MonoSingleton<GameManager>
         temp.Init(tileType, pos);
 
         currentTilePosY = pos.y;
+
+        showTileList.Add(temp);
         return temp;
     }
 
@@ -143,7 +181,7 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public bool NeedRecoveryTile(TileBase tile)
     {
-        if (tile.transform.position.y > recoverY)
+        if (tile.transform.position.y > RecoverY)
         {
             return false;
         }
@@ -156,11 +194,12 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     public void RecoveryTile(float nowY)
     {
-        recoverY = nowY - recoveryTileY;
+        RecoverY = nowY - recoveryTileY;
         int removeIndex = -1;
         int count = showTileList.Count - 1;
+
         for (int i = 0; i < showTileList.Count; i++)
-        {
+        {//标记是否可回收
             if (!NeedRecoveryTile(showTileList[i]))
             {
                 removeIndex = i - 1;
@@ -171,12 +210,27 @@ public class GameManager : MonoSingleton<GameManager>
                 removeIndex = count;
             }
         }
+
         for (int i = 0; i < removeIndex; i++)
-        {
+        {//回收
             var tempTile = showTileList[0];
             tempTile.Recovery();
             tilePool.Put(tempTile);
             showTileList.RemoveAt(0);
         }
+
+        for (int i = 0; i < removeIndex; i++)
+        {
+
+            //添加新的
+            SpawnNewTile();
+            //添加道具
+            //增加游戏难度
+        }
+    }
+
+    public void PlayerDie()
+    {
+        GameState = GameState.GameOver;
     }
 }

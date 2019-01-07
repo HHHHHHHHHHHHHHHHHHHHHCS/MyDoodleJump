@@ -11,6 +11,14 @@ public enum ObjectType
     Bullet,
 }
 
+public enum GameState
+{
+    Ready = 0,
+    Pause ,
+    Running,
+    GameOver,
+}
+
 public class GameData : MonoSingleton<GameData>
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;

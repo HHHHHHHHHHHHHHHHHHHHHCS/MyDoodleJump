@@ -23,7 +23,7 @@ public class TileBase : MonoBehaviour
         col2D = GetComponent<BoxCollider2D>();
     }
 
-    private void Update()
+    public void OnUpdate()
     {
         switch (tileType)
         {
