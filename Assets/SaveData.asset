@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_GeneratorAsset: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 7a53a4c8de08deb468da60b57038c72b, type: 3}
+  m_Name: SaveData
+  m_EditorClassIdentifier: 
+  tilePrefab: {fileID: 8948703013283240022, guid: 39a9e6ec71ba9134691c107452c5fe7c,
+    type: 3}
+  tileParent: TileParent
+  titleSprite:
+  - {fileID: 21300000, guid: 5f9cad837daa4344188cc876a95c5663, type: 3}
+  - {fileID: 21300000, guid: f79ef8651780a2a4287a97f9cc0e39f4, type: 3}
+  - {fileID: 21300000, guid: 5eb27c93103ad2941911d39aa1887346, type: 3}
+  - {fileID: 21300000, guid: a207ae48e52628d45a15dea13a5474ea, type: 3}
+  - {fileID: 21300000, guid: 92edd0ea30c82d0499e0b8ee1fb7195d, type: 3}
+  - {fileID: 21300000, guid: 92edd0ea30c82d0499e0b8ee1fb7195d, type: 3}
+  normalTile:
+    minHeight: 1
+    maxHeight: 2
+    weight: 80
+  brokenTile:
+    minHeight: 1.1
+    maxHeight: 2
+    weight: 40
+  onceTile:
+    minHeight: 1.2
+    maxHeight: 2.4
+    weight: 20
+  springTile:
+    minHeight: 1.3
+    maxHeight: 2.6
+    weight: 15
+  moveHorTile:
+    minHeight: 1.4
+    maxHeight: 2.6
+    weight: 10
+    distance: 1.6
+    speed: 1
+  moveVerTile:
+    minHeight: 1.4
+    maxHeight: 2.6
+    weight: 10
+    distance: 2
+    speed: 0.7
+  itemPrefab: {fileID: 1388499431880456444, guid: 0c0cd7bc7e6fb0a4a9beeaf44cdf0060,
+    type: 3}
+  itemParent: ItemParent
+  hatFlyTime: 1.5
+  rocketFlyTime: 3

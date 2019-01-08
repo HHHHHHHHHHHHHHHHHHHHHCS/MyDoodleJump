@@ -7,7 +7,7 @@ public class TargetFollow : MonoBehaviour
     [SerializeField]
     private Transform target;
     [SerializeField]
-    private float damoTime = 0.5f;
+    private float dampTime = 0.5f;
 
     private Camera mainCam;
     private Vector3 velocity, destination;
@@ -36,7 +36,7 @@ public class TargetFollow : MonoBehaviour
         }
         if (transform.position.y < destination.y)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, damoTime);
+            transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
             GameManager.Instance.RecoveryTile(transform.position.y);
         }
     }

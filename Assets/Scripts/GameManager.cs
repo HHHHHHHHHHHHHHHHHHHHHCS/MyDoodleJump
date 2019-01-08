@@ -13,15 +13,17 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private const float recoveryTileY = 12.5f;
 
-    public TileBase tilePrefab;
-    public Transform tileParent;
+    [field:SerializeField]
+    public GameData gameData { get; private set; }
 
-    private List<TileBase> showTileList;
-    private ObjectPool<TileBase> tilePool;
-    private ObjectPool<Transform> coinPool;
-    private ObjectPool<Transform> bulletPool;
-    private ObjectPool<Transform> enemyPool;
-    private ObjectPool<Transform> itemPool;
+    public static GameData GameData=> GameManager.Instance.gameData;
+
+    public List<TileBase> ShowTileList { get; private set; }
+    public ObjectPool<TileBase> TilePool { get; private set; }
+    public ObjectPool<Transform> CoinPool { get; private set; }
+    public ObjectPool<Transform> BulletPool { get; private set; }
+    public ObjectPool<Transform> EnemyPool { get; private set; }
+    public ObjectPool<ItemBase> ItemPool { get; private set; }
 
     /// <summary>
     /// 当前跳板的位置
@@ -47,8 +49,10 @@ public class GameManager : MonoSingleton<GameManager>
     protected override void OnAwake()
     {
         Player = GameObject.Find("Player").GetComponent<Player>();
-        showTileList = new List<TileBase>();
-        tilePool = new ObjectPool<TileBase>(tilePrefab, 20);
+
+        ShowTileList = new List<TileBase>();
+        TilePool = new ObjectPool<TileBase>(gameData.tilePrefab, 20, gameData.tileParent);
+        ItemPool = new ObjectPool<ItemBase>(gameData.itemPrefab, 10, gameData.itemParent);
     }
 
     private void Start()
@@ -77,7 +81,7 @@ public class GameManager : MonoSingleton<GameManager>
             return;
         }
 
-        foreach (var tile in showTileList)
+        foreach (var tile in ShowTileList)
         {
             tile.OnUpdate();
         }
@@ -85,11 +89,11 @@ public class GameManager : MonoSingleton<GameManager>
 
     public TileBase SpawnNewTile()
     {
-        var temp = tilePool.Get();
+        var temp = TilePool.Get();
         var tileType = (TileType)GetTileType();
         Vector2 pos = new Vector2(Random.Range(GameData.xMinBorder, GameData.xMaxBorder), currentTilePosY);
 
-        var data = GameData.Instance;
+        var data = GameManager.GameData;
 
         switch (tileType)
         {
@@ -126,7 +130,7 @@ public class GameManager : MonoSingleton<GameManager>
 
         currentTilePosY = pos.y;
 
-        showTileList.Add(temp);
+        ShowTileList.Add(temp);
         return temp;
     }
 
@@ -135,40 +139,38 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private int GetTileType()
     {
-        var data = GameData.Instance;
-
-        float rand = Random.Range(0, data.SumAllWeight);
-        if (rand < data.normalTile.weight)
+        float rand = Random.Range(0, gameData.SumAllWeight);
+        if (rand < gameData.normalTile.weight)
         {
             return 0;
         }
 
-        rand -= data.normalTile.weight;
-        if (rand < data.brokenTile.weight)
+        rand -= gameData.normalTile.weight;
+        if (rand < gameData.brokenTile.weight)
         {
             return 1;
         }
 
-        rand -= data.brokenTile.weight;
-        if (rand < data.onceTile.weight)
+        rand -= gameData.brokenTile.weight;
+        if (rand < gameData.onceTile.weight)
         {
             return 2;
         }
 
-        rand -= data.onceTile.weight;
-        if (rand < data.springTile.weight)
+        rand -= gameData.onceTile.weight;
+        if (rand < gameData.springTile.weight)
         {
             return 3;
         }
 
-        rand -= data.springTile.weight;
-        if (rand < data.moveHorTile.weight)
+        rand -= gameData.springTile.weight;
+        if (rand < gameData.moveHorTile.weight)
         {
             return 4;
         }
 
-        rand -= data.moveHorTile.weight;
-        if (rand <= data.moveVerTile.weight)
+        rand -= gameData.moveHorTile.weight;
+        if (rand <= gameData.moveVerTile.weight)
         {
             return 5;
         }
@@ -196,11 +198,11 @@ public class GameManager : MonoSingleton<GameManager>
     {
         RecoverY = nowY - recoveryTileY;
         int removeIndex = -1;
-        int count = showTileList.Count - 1;
+        int count = ShowTileList.Count - 1;
 
-        for (int i = 0; i < showTileList.Count; i++)
+        for (int i = 0; i < ShowTileList.Count; i++)
         {//标记是否可回收
-            if (!NeedRecoveryTile(showTileList[i]))
+            if (!NeedRecoveryTile(ShowTileList[i]))
             {
                 removeIndex = i - 1;
                 break;
@@ -213,10 +215,10 @@ public class GameManager : MonoSingleton<GameManager>
 
         for (int i = 0; i < removeIndex; i++)
         {//回收
-            var tempTile = showTileList[0];
+            var tempTile = ShowTileList[0];
             tempTile.Recovery();
-            tilePool.Put(tempTile);
-            showTileList.RemoveAt(0);
+            TilePool.Put(tempTile);
+            ShowTileList.RemoveAt(0);
         }
 
         for (int i = 0; i < removeIndex; i++)

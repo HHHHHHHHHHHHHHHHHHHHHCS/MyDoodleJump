@@ -31,7 +31,7 @@ public class TileBase : MonoBehaviour
                 {
 
 
-                    var moveHorTile = GameData.Instance.moveHorTile;
+                    var moveHorTile = GameManager.GameData.moveHorTile;
                     Vector2 newPos = Vector2.zero;
                     newPos.x = moveDir * moveHorTile.speed * Time.deltaTime;
                     transform.Translate(newPos);
@@ -47,7 +47,7 @@ public class TileBase : MonoBehaviour
                 }
             case TileType.MoveVerTile:
                 {
-                    var moveVerTile = GameData.Instance.moveVerTile;
+                    var moveVerTile = GameManager.GameData.moveVerTile;
                     Vector2 newPos = Vector2.zero;
                     newPos.y = moveDir * moveVerTile.speed * Time.deltaTime;
                     transform.Translate(newPos);
@@ -96,7 +96,7 @@ public class TileBase : MonoBehaviour
     public void Active()
     {
         col2D.enabled = true;
-        var sprites = GameData.Instance.titleSprite;
+        var sprites = GameManager.GameData.titleSprite;
         int type = (int)tileType;
         if (type < sprites.Length)
         {

@@ -13,6 +13,17 @@ public class ObjectPool<T> where T : Component
 
     }
 
+    public ObjectPool(T itemPrefab, int initSize, string prefabParent = null)
+    {
+        Transform ts = null;
+        if (!string.IsNullOrEmpty(prefabParent))
+        {
+            ts = new GameObject(prefabParent).transform;
+        }
+
+        Init(itemPrefab, initSize, ts);
+    }
+
     public ObjectPool(T itemPrefab, int initSize, Transform prefabParent = null)
     {
         Init(itemPrefab, initSize, prefabParent);
@@ -26,15 +37,14 @@ public class ObjectPool<T> where T : Component
         for (int i = 0; i < initSize; i++)
         {
             var item = Instantiate();
-            item.gameObject.SetActive(false);
-            objPool.Enqueue(item);
+            Put(item);
         }
     }
 
 
     private T Instantiate()
     {
-        if (prefab != null)
+        if (prefab)
         {
             if (parent)
             {
@@ -64,6 +74,7 @@ public class ObjectPool<T> where T : Component
 
     public void Put(T item)
     {
+        item.gameObject.SetActive(false);
         objPool.Enqueue(item);
     }
 }

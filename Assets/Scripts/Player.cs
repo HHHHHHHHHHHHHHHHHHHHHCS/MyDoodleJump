@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoSingleton<Player>
 {
     private Vector3 leftDir = new Vector3(-1, 1, 1),
         rightDir = new Vector3(1, 1, 1);
@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D rigi;
     private Collider2D col2d;
 
-    private void Awake()
+    protected override void OnAwake()
     {
         rigi = GetComponent<Rigidbody2D>();
         col2d = GetComponent<Collider2D>();
@@ -74,11 +74,24 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 跳跃
+    /// </summary>
     public void Jump(float speedScale)
     {
         rigi.velocity = Vector2.zero;
         //Impulse瞬间的力,不再采用系统的帧频间隔
         rigi.AddForce(new Vector2(0, 12 * speedScale), ForceMode2D.Impulse);
+    }
+
+    /// <summary>
+    /// 飞行
+    /// </summary>
+    public void Fly(float Time)
+    {
+        rigi.velocity = Vector2.zero;
+        rigi.isKinematic = true;
+        col2d.enabled = false;
     }
 
     /// <summary>

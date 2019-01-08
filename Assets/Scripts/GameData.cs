@@ -1,7 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
+/// <summary>
+/// 类型
+/// </summary>
 public enum ObjectType
 {
     Tile = 0,
@@ -11,19 +17,36 @@ public enum ObjectType
     Bullet,
 }
 
+/// <summary>
+/// 游戏状态
+/// </summary>
 public enum GameState
 {
     Ready = 0,
-    Pause ,
+    Pause,
     Running,
     GameOver,
 }
 
-public class GameData : MonoSingleton<GameData>
+/// <summary>
+/// 物品类型
+/// </summary>
+public enum ItemType
+{
+    None = 0,
+    Hat,
+    Rocket,
+}
+
+public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
     public const float startTilePosY = -4;
 
+    [Space(10), Header("Tile")]
+
+    public TileBase tilePrefab;
+    public string tileParent;
     public Sprite[] titleSprite;
     public NormalTile normalTile;
     public BrokenTile brokenTile;
@@ -32,21 +55,38 @@ public class GameData : MonoSingleton<GameData>
     public MoveHorTile moveHorTile;
     public MoveVerTile moveVerTile;
 
-    private float sumAllWeight;
+    [Space(10), Header("Item")]
 
-    public float SumAllWeight { get => sumAllWeight; }
+    public ItemBase itemPrefab;
+    public string itemParent;
+    public float hatFlyTime = 1.5f;
+    public float rocketFlyTime = 3f;
 
-    static GameData()
+    private float sumAllWeight = -1;
+
+    public float SumAllWeight
     {
-        singletonPath = "GameData";
+        get
+        {
+            if (sumAllWeight < 0)
+            {
+                sumAllWeight = normalTile.weight + brokenTile.weight + onceTile.weight
+                    + springTile.weight + moveHorTile.weight + moveVerTile.weight;
+            }
+            return sumAllWeight;
+        }
     }
-
-    protected override void OnAwake()
+#if UNITY_EDITOR
+    [MenuItem("Data/SaveData")]
+    static void CreateExampleAsset()
     {
-        sumAllWeight = normalTile.weight + brokenTile.weight + onceTile.weight
-            + springTile.weight + moveHorTile.weight + moveVerTile.weight;
+        string path = EditorUtility.SaveFilePanelInProject("Save Game Data"
+            , "SaveData", "asset", "Save Game Data");
+        var asset = CreateInstance<GameData>();
+        AssetDatabase.CreateAsset(asset, path);
+        AssetDatabase.Refresh();
     }
-
+#endif
 
 }
 
