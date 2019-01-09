@@ -15,7 +15,7 @@ public class ItemBase : MonoBehaviour
         rocket = transform.Find("Rocket").gameObject;
     }
 
-    public void Init()
+    public void Init(TileBase tile)
     {
         HideAll();
         flyTime = 0;
@@ -45,8 +45,8 @@ public class ItemBase : MonoBehaviour
     {
         if (collision.CompareTag(Tags.Player))
         {
-            GameManager.Instance.ItemPool.Put(this);
-            Player.Instance.Fly(flyTime);
+            GameManager.Instance.itemManager.ItemPool.Put(this);
+            Player.Instance.Fly(itemType,flyTime);
         }
     }
 }

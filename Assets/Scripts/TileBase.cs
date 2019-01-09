@@ -170,7 +170,7 @@ public class TileBase : MonoBehaviour
     {
         while (isDown)
         {
-            if (GameManager.Instance.NeedRecoveryTile(this))
+            if (GameManager.Instance.tileManager.NeedRecoveryTile(this))
             {
                 StopFallDown();
                 yield break;

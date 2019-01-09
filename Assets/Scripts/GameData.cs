@@ -41,10 +41,17 @@ public enum ItemType
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
-    public const float startTilePosY = -4;
+    
+
+    [Space(10), Header("Player")]
+
+    public float playerHorSpeed = 0.1f;
+    public float playerFlySpeed = 5f;
+
 
     [Space(10), Header("Tile")]
 
+    public float startTilePosY = -4;
     public TileBase tilePrefab;
     public string tileParent;
     public Sprite[] titleSprite;
@@ -61,21 +68,39 @@ public class GameData : ScriptableObject
     public string itemParent;
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
+    public float hatWeight = 0.1f;
+    public float rocketWeight = 0.05f;
 
-    private float sumAllWeight = -1;
+    private float allTileWeight = -1;
 
-    public float SumAllWeight
+    public float AllTileWeight
     {
         get
         {
-            if (sumAllWeight < 0)
+            if (allTileWeight < 0)
             {
-                sumAllWeight = normalTile.weight + brokenTile.weight + onceTile.weight
+                allTileWeight = normalTile.weight + brokenTile.weight + onceTile.weight
                     + springTile.weight + moveHorTile.weight + moveVerTile.weight;
             }
-            return sumAllWeight;
+            return allTileWeight;
         }
     }
+
+    private float allItemWeight = -1;
+
+    public float AllItemWeight
+    {
+        get
+        {
+            if (allItemWeight < 0)
+            {
+                allItemWeight = 1 + hatWeight + rocketWeight;
+            }
+
+            return allItemWeight;
+        }
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Data/SaveData")]
     static void CreateExampleAsset()

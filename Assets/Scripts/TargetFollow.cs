@@ -37,7 +37,7 @@ public class TargetFollow : MonoBehaviour
         if (transform.position.y < destination.y)
         {
             transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
-            GameManager.Instance.RecoveryTile(transform.position.y);
+            GameManager.Instance.DoRecovery(transform.position.y);
         }
     }
 }

@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class Player : MonoSingleton<Player>
 {
-    private Vector3 leftDir = new Vector3(-1, 1, 1),
+    private readonly Vector3 leftDir = new Vector3(-1, 1, 1),
         rightDir = new Vector3(1, 1, 1);
+
     private float leftBorder, rightBorder;
     private Rigidbody2D rigi;
     private Collider2D col2d;
+    private GameObject hat_Used, rocket_Used;
+    private bool isFly;
 
     protected override void OnAwake()
     {
         rigi = GetComponent<Rigidbody2D>();
         col2d = GetComponent<Collider2D>();
+        hat_Used = transform.Find("Hat_Used").gameObject;
+        rocket_Used = transform.Find("Rocket_Used").gameObject;
         var mainCam = Camera.main;
         leftBorder = mainCam.ViewportToWorldPoint(Vector3.zero).x;
         rightBorder = mainCam.ViewportToWorldPoint(Vector3.right).x;
@@ -22,7 +27,7 @@ public class Player : MonoSingleton<Player>
 
     private void Update()
     {
-        if(GameManager.Instance.GameState != GameState.Running)
+        if (GameManager.Instance.GameState != GameState.Running)
         {
             return;
         }
@@ -32,16 +37,22 @@ public class Player : MonoSingleton<Player>
             Die();
         }
 
+        if (isFly)
+        {
+            transform.Translate(GameManager.GameData.hatFlyTime
+                                * Time.deltaTime * Vector3.up);
+        }
+
         Vector3 acc = Vector3.zero;
         var ori = transform.localPosition;
         if (Input.GetKey(KeyCode.A))
         {
-            acc.x -= 0.1f;
+            acc.x -= GameManager.GameData.playerHorSpeed;
             transform.localScale = leftDir;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            acc.x += 0.1f;
+            acc.x += GameManager.GameData.playerHorSpeed;
             transform.localScale = rightDir;
         }
 
@@ -68,6 +79,7 @@ public class Player : MonoSingleton<Player>
         {
             return;
         }
+
         if (collision.CompareTag(Tags.Platform))
         {
             Jump(1);
@@ -87,11 +99,48 @@ public class Player : MonoSingleton<Player>
     /// <summary>
     /// 飞行
     /// </summary>
-    public void Fly(float Time)
+    public void Fly(ItemType itemType, float time)
     {
         rigi.velocity = Vector2.zero;
         rigi.isKinematic = true;
         col2d.enabled = false;
+        isFly = true;
+        switch (itemType)
+        {
+            case ItemType.Hat:
+            {
+                hat_Used.SetActive(true);
+                break;
+            }
+            case ItemType.Rocket:
+            {
+                rocket_Used.SetActive(true);
+                break;
+            }
+        }
+
+        StartCoroutine(StopFly(itemType, time));
+    }
+
+    private IEnumerator StopFly(ItemType itemType, float time)
+    {
+        yield return new WaitForSeconds(time);
+        rigi.isKinematic = false;
+        col2d.enabled = true;
+        isFly = false;
+        switch (itemType)
+        {
+            case ItemType.Hat:
+            {
+                hat_Used.SetActive(false);
+                break;
+            }
+            case ItemType.Rocket:
+            {
+                rocket_Used.SetActive(false);
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -103,6 +152,7 @@ public class Player : MonoSingleton<Player>
         {
             return true;
         }
+
         return false;
     }
 
@@ -133,6 +183,4 @@ public class Player : MonoSingleton<Player>
         col2d.enabled = false;
         GameManager.Instance.PlayerDie();
     }
-
-
 }
