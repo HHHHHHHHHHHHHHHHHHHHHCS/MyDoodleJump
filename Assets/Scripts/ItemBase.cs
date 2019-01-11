@@ -8,6 +8,7 @@ public class ItemBase : MonoBehaviour
 
     private GameObject hat, rocket;
     private float flyTime;
+    private TileBase bindTile;
 
     private void Awake()
     {
@@ -15,11 +16,13 @@ public class ItemBase : MonoBehaviour
         rocket = transform.Find("Rocket").gameObject;
     }
 
-    public void Init(TileBase tile)
+    public void Init(TileBase tile,ItemType type)
     {
         HideAll();
         flyTime = 0;
-        gameObject.SetActive(true);
+        itemType = type;
+        bindTile = tile;
+  
         switch (itemType)
         {
             case ItemType.Hat:
@@ -33,19 +36,33 @@ public class ItemBase : MonoBehaviour
             default:
                 break;
         }
+
+        OnUpdate();
+        gameObject.SetActive(true);
     }
 
+    public void OnUpdate()
+    {
+        transform.position = bindTile.CenterUpPos;
+    }
+
+    /// <summary>
+    /// 全部隐藏
+    /// </summary>
     public void HideAll()
     {
         hat.SetActive(false);
         rocket.SetActive(false);
     }
 
+    /// <summary>
+    /// 玩家进入
+    /// </summary>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag(Tags.Player))
         {
-            GameManager.Instance.itemManager.ItemPool.Put(this);
+            GameManager.Instance.itemManager.RecoveryItem(this);
             Player.Instance.Fly(itemType,flyTime);
         }
     }

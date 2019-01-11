@@ -17,6 +17,16 @@ public class TileBase : MonoBehaviour
     private int moveDir;//-1 左下, 1 右上
     private Vector2 startPos;
 
+    public Vector3 CenterUpPos
+    {
+        get
+        {
+            Vector3 v3 = transform.position;
+            v3.y += spriteRenderer.sprite.bounds.size.y/2;
+            return v3;
+        }
+    }
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();

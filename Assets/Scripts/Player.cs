@@ -39,7 +39,7 @@ public class Player : MonoSingleton<Player>
 
         if (isFly)
         {
-            transform.Translate(GameManager.GameData.hatFlyTime
+            transform.Translate(GameManager.GameData.playerFlySpeed
                                 * Time.deltaTime * Vector3.up);
         }
 

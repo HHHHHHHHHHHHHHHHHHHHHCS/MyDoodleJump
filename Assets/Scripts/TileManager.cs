@@ -38,7 +38,6 @@ public class TileManager
 
     public void OnUpdate()
     {
-
         foreach (var tile in ShowTileList)
         {
             tile.OnUpdate();
@@ -152,18 +151,30 @@ public class TileManager
         return true;
     }
 
+    /// <summary>
+    /// 判断跳板是否需要回收
+    /// </summary>
+    public bool NeedRecoveryTile(TileBase tile,float checkPosY)
+    {
+        if (tile.transform.position.y > checkPosY)
+        {
+            return false;
+        }
+        return true;
+    }
+
 
     /// <summary>
     /// 回收跳板用
     /// </summary>
-    public void RecoveryTile()
+    public void RecoveryTile(float checkPosY)
     {
         int removeIndex = -1;
         int count = ShowTileList.Count - 1;
 
         for (int i = 0; i < ShowTileList.Count; i++)
         {//标记是否可回收
-            if (!NeedRecoveryTile(ShowTileList[i]))
+            if (!NeedRecoveryTile(ShowTileList[i], checkPosY))
             {
                 removeIndex = i - 1;
                 break;
@@ -174,7 +185,7 @@ public class TileManager
             }
         }
 
-        for (int i = 0; i < removeIndex; i++)
+        for (int i = 0; i <= removeIndex; i++)
         {//回收
             var tempTile = ShowTileList[0];
             tempTile.Recovery();
@@ -182,13 +193,12 @@ public class TileManager
             ShowTileList.RemoveAt(0);
         }
 
-        for (int i = 0; i < removeIndex; i++)
+        for (int i = 0; i <= removeIndex; i++)
         {
-
+            //增加游戏难度
             //添加新的
             SpawnNewTile();
             //添加道具
-            //增加游戏难度
         }
     }
 

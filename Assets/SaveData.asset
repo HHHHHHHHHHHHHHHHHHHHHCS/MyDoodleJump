@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a53a4c8de08deb468da60b57038c72b, type: 3}
   m_Name: SaveData
   m_EditorClassIdentifier: 
+  playerHorSpeed: 0.1
+  playerFlySpeed: 5
+  startTilePosY: -4
   tilePrefab: {fileID: 8948703013283240022, guid: 39a9e6ec71ba9134691c107452c5fe7c,
     type: 3}
   tileParent: TileParent
@@ -56,3 +59,5 @@ MonoBehaviour:
   itemParent: ItemParent
   hatFlyTime: 1.5
   rocketFlyTime: 3
+  hatWeight: 0.1
+  rocketWeight: 0.05

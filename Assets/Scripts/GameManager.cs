@@ -47,6 +47,9 @@ public class GameManager : MonoSingleton<GameManager>
 
         tileManager = new TileManager();
         itemManager = new ItemManager();
+
+
+        tileManager.createTileCallback += itemManager.SpawnItem;
     }
 
     private void Start()
@@ -73,12 +76,18 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         tileManager.OnUpdate();
+        itemManager.OnUpdate();
     }
 
+    /// <summary>
+    /// 执行回收
+    /// </summary>
+    /// <param name="nowY"></param>
     public void DoRecovery(float nowY)
     {
         RecoverY = nowY - recoveryTileY;
-        tileManager.RecoveryTile();
+        tileManager.RecoveryTile(RecoverY);
+        itemManager.RecoveryTile(RecoverY);
     }
 
     public void PlayerDie()
