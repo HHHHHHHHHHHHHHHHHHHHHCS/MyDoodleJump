@@ -9,13 +9,14 @@ public class TileBase : MonoBehaviour
     [SerializeField]
     private TileType tileType;
 
-
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D col2D;
     private Coroutine coroutine;
     private bool isDown;
     private int moveDir;//-1 左下, 1 右上
     private Vector2 startPos;
+
+    public bool IsBind{ get; set; }
 
     public Vector3 CenterUpPos
     {

@@ -10,6 +10,7 @@ public class TileManager
     public ObjectPool<TileBase> TilePool { get; private set; }
 
     public event Action<TileBase> createTileCallback;
+    public event Action<TileBase> recoveryCallback;
 
     private readonly GameData gameData;
 
@@ -17,6 +18,11 @@ public class TileManager
     /// 当前跳板的位置
     /// </summary>
     private float currentTilePosY;
+
+    /// <summary>
+    /// 需要添加的tiles
+    /// </summary>
+    private int needAddTiles;
 
 
     public TileManager()
@@ -163,6 +169,19 @@ public class TileManager
         return true;
     }
 
+    public void SpawnNeedAddTiles()
+    {
+        for (int i = 1; i <= needAddTiles; i++)
+        {
+            //增加游戏难度
+            //添加新的
+            SpawnNewTile();
+            //添加道具
+        }
+
+        needAddTiles = 0;
+    }
+
 
     /// <summary>
     /// 回收跳板用
@@ -189,17 +208,12 @@ public class TileManager
         {//回收
             var tempTile = ShowTileList[0];
             tempTile.Recovery();
+            recoveryCallback?.Invoke(tempTile);
             TilePool.Put(tempTile);
             ShowTileList.RemoveAt(0);
         }
 
-        for (int i = 0; i <= removeIndex; i++)
-        {
-            //增加游戏难度
-            //添加新的
-            SpawnNewTile();
-            //添加道具
-        }
+        needAddTiles += removeIndex+1;
     }
 
 }

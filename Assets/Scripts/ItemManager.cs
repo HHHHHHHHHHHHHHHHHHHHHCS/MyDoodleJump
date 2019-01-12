@@ -16,6 +16,8 @@ public class ItemManager
         ItemPool = new ObjectPool<ItemBase>(gameData.itemPrefab, 10, gameData.itemParent);
     }
 
+    private int i = 0;
+
     /// <summary>
     /// 检查是否能创建
     /// </summary>
@@ -23,6 +25,12 @@ public class ItemManager
     {
         var rd = Random.Range(0, gameData.AllItemWeight);
         if (rd < 1)
+        {
+            return ItemType.None;
+        }
+
+        i++;
+        if (i >= 5)
         {
             return ItemType.None;
         }
@@ -58,12 +66,15 @@ public class ItemManager
     /// </summary>
     public void SpawnItem(TileBase tile)
     {
-        var type = CheckNeedCreate();
-        if (type != ItemType.None)
+        if (!tile.IsBind)
         {
-            var temp = ItemPool.Get();
-            temp.Init(tile, type);
-            ShowItemList.Add(temp);
+            var type = CheckNeedCreate();
+            if (type != ItemType.None)
+            {
+                var temp = ItemPool.Get();
+                temp.Init(tile, type);
+                ShowItemList.Add(temp);
+            }
         }
     }
 
@@ -92,6 +103,7 @@ public class ItemManager
             if (!NeedRecoveryItem(ShowItemList[i], checkPosY))
             {
                 removeIndex = i - 1;
+
                 break;
             }
             else if (i == count)
@@ -108,10 +120,29 @@ public class ItemManager
 
     }
 
+    /// <summary>
+    /// 回收物品
+    /// </summary>
     public void RecoveryItem(ItemBase item)
     {
+        item.BindTile.IsBind = false;
         item.HideAll();
         ShowItemList.Remove(item);
         ItemPool.Put(item);
+    }
+
+    /// <summary>
+    /// 回收绑定跳板的物品
+    /// </summary>
+    public void RecoveryBindItem(TileBase tile)
+    {
+        foreach (var item in ShowItemList)
+        {
+            if (item.BindTile == tile)
+            {
+                RecoveryItem(item);
+                return;
+            }
+        }
     }
 }

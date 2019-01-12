@@ -61,3 +61,8 @@ MonoBehaviour:
   rocketFlyTime: 3
   hatWeight: 0.1
   rocketWeight: 0.05
+  moneyPrefab: {fileID: 3791924594461043428, guid: 8c6ffeef671498644afd2c5ce2a93f7e,
+    type: 3}
+  moneyParent: MoneyParent
+  moneyValue: 1
+  moneyWeight: 0.1

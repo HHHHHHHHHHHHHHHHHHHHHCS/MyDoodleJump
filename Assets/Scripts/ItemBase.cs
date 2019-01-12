@@ -8,7 +8,12 @@ public class ItemBase : MonoBehaviour
 
     private GameObject hat, rocket;
     private float flyTime;
-    private TileBase bindTile;
+
+    /// <summary>
+    /// 绑定的跳板
+    /// </summary>
+    public TileBase BindTile { get; private set; }
+
 
     private void Awake()
     {
@@ -21,7 +26,7 @@ public class ItemBase : MonoBehaviour
         HideAll();
         flyTime = 0;
         itemType = type;
-        bindTile = tile;
+        BindTile = tile;
   
         switch (itemType)
         {
@@ -43,7 +48,7 @@ public class ItemBase : MonoBehaviour
 
     public void OnUpdate()
     {
-        transform.position = bindTile.CenterUpPos;
+        transform.position = BindTile.CenterUpPos;
     }
 
     /// <summary>

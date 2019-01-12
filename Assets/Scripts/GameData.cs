@@ -41,19 +41,17 @@ public enum ItemType
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
-    
+
 
     [Space(10), Header("Player")]
-
     public float playerHorSpeed = 0.1f;
     public float playerFlySpeed = 5f;
 
 
     [Space(10), Header("Tile")]
-
     public float startTilePosY = -4;
     public TileBase tilePrefab;
-    public string tileParent;
+    public string tileParent = "TileParent";
     public Sprite[] titleSprite;
     public NormalTile normalTile;
     public BrokenTile brokenTile;
@@ -63,13 +61,20 @@ public class GameData : ScriptableObject
     public MoveVerTile moveVerTile;
 
     [Space(10), Header("Item")]
-
     public ItemBase itemPrefab;
-    public string itemParent;
+    public string itemParent = "ItemParent";
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
     public float hatWeight = 0.1f;
     public float rocketWeight = 0.05f;
+
+
+    [Space(10), Header("Money")]
+    public MoneyBase moneyPrefab;
+    public string moneyParent = "MoneyParent";
+    public int moneyValue = 1;
+    public float moneyWeight = 0.1f;
+
 
     private float allTileWeight = -1;
 
@@ -80,8 +85,9 @@ public class GameData : ScriptableObject
             if (allTileWeight < 0)
             {
                 allTileWeight = normalTile.weight + brokenTile.weight + onceTile.weight
-                    + springTile.weight + moveHorTile.weight + moveVerTile.weight;
+                                + springTile.weight + moveHorTile.weight + moveVerTile.weight;
             }
+
             return allTileWeight;
         }
     }
@@ -112,7 +118,6 @@ public class GameData : ScriptableObject
         AssetDatabase.Refresh();
     }
 #endif
-
 }
 
 public class Tags
