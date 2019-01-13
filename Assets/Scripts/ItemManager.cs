@@ -7,16 +7,15 @@ public class ItemManager
     public List<ItemBase> ShowItemList { get; private set; }
     public ObjectPool<ItemBase> ItemPool { get; private set; }
 
-    private GameData gameData;
+    private readonly GameData gameData;
 
     public ItemManager()
     {
-        gameData = GameManager.GameData;
+        gameData = MainGameManager.GameData;
         ShowItemList = new List<ItemBase>();
-        ItemPool = new ObjectPool<ItemBase>(gameData.itemPrefab, 10, gameData.itemParent);
+        ItemPool = new ObjectPool<ItemBase>(gameData.itemPrefab, 0, gameData.itemParent);
     }
 
-    private int i = 0;
 
     /// <summary>
     /// 检查是否能创建
@@ -25,12 +24,6 @@ public class ItemManager
     {
         var rd = Random.Range(0, gameData.AllItemWeight);
         if (rd < 1)
-        {
-            return ItemType.None;
-        }
-
-        i++;
-        if (i >= 5)
         {
             return ItemType.None;
         }
@@ -79,48 +72,6 @@ public class ItemManager
     }
 
     /// <summary>
-    /// 判断是否需要回收物品
-    /// </summary>
-    public bool NeedRecoveryItem(ItemBase tile,float checkPosY)
-    {
-        if (tile.transform.position.y > checkPosY)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    /// <summary>
-    /// 回收跳板用
-    /// </summary>
-    public void RecoveryTile(float checkPosY)
-    {
-        int removeIndex = -1;
-        int count = ShowItemList.Count - 1;
-
-        for (int i = 0; i < ShowItemList.Count; i++)
-        {//标记是否可回收
-            if (!NeedRecoveryItem(ShowItemList[i], checkPosY))
-            {
-                removeIndex = i - 1;
-
-                break;
-            }
-            else if (i == count)
-            {
-                removeIndex = count;
-            }
-        }
-
-        for (int i = 0; i <= removeIndex; i++)
-        {//回收
-            var tempTile = ShowItemList[0];
-            RecoveryItem(tempTile);
-        }
-
-    }
-
-    /// <summary>
     /// 回收物品
     /// </summary>
     public void RecoveryItem(ItemBase item)
@@ -136,13 +87,9 @@ public class ItemManager
     /// </summary>
     public void RecoveryBindItem(TileBase tile)
     {
-        foreach (var item in ShowItemList)
+        if (tile.BindItem)
         {
-            if (item.BindTile == tile)
-            {
-                RecoveryItem(item);
-                return;
-            }
+            RecoveryItem(tile.BindItem);
         }
     }
 }

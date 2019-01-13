@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoSingleton<GameManager>
+public class MainGameManager : MonoSingleton<MainGameManager>
 {
     /// <summary>
     /// 初始化对象池的大小
@@ -13,18 +13,27 @@ public class GameManager : MonoSingleton<GameManager>
     /// </summary>
     private const float recoveryTileY = 12.5f;
 
+    /// <summary>
+    /// 游戏数据
+    /// </summary>
     [field:SerializeField]
     public GameData gameData { get; private set; }
 
-    public static GameData GameData=> Instance.gameData;
 
-    public TileManager tileManager;
-    public ItemManager itemManager;
+    /// <summary>
+    /// 玩家当前的金钱
+    /// </summary>
+    private int money = 0;
 
-    public ObjectPool<Transform> CoinPool { get; private set; }
-    public ObjectPool<Transform> BulletPool { get; private set; }
-    public ObjectPool<Transform> EnemyPool { get; private set; }
 
+    public TileManager TileManager{ get; private set; }
+    public ItemManager ItemManager { get; private set; }
+    public MoneyManager MoneyManager { get; private set; }
+
+    /// <summary>
+    /// 游戏数据
+    /// </summary>
+    public static GameData GameData => Instance.gameData;
 
     /// <summary>
     /// 游戏状态
@@ -45,17 +54,21 @@ public class GameManager : MonoSingleton<GameManager>
     {
         Player = GameObject.Find("Player").GetComponent<Player>();
 
-        tileManager = new TileManager();
-        itemManager = new ItemManager();
+        TileManager = new TileManager();
+        ItemManager = new ItemManager();
+        MoneyManager=new MoneyManager();
 
 
-        tileManager.createTileCallback += itemManager.SpawnItem;
-        tileManager.recoveryCallback += itemManager.RecoveryBindItem;
+        TileManager.createTileCallback += ItemManager.SpawnItem;
+        TileManager.createTileCallback += MoneyManager.CreateMoney;
+
+        TileManager.recoveryCallback += ItemManager.RecoveryBindItem;
+        TileManager.recoveryCallback += MoneyManager.RecoveryBindMoney;
     }
 
     private void Start()
     {
-        tileManager.CreateStartTiles();
+        TileManager.CreateStartTiles();
     }
 
     private void Update()
@@ -76,8 +89,9 @@ public class GameManager : MonoSingleton<GameManager>
             return;
         }
 
-        tileManager.OnUpdate();
-        itemManager.OnUpdate();
+        TileManager.OnUpdate();
+        ItemManager.OnUpdate();
+        MoneyManager.OnUpdate();
     }
 
     /// <summary>
@@ -87,14 +101,18 @@ public class GameManager : MonoSingleton<GameManager>
     public void DoRecovery(float nowY)
     {
         RecoverY = nowY - recoveryTileY;
-        itemManager.RecoveryTile(RecoverY);
-        tileManager.RecoveryTile(RecoverY);
+        TileManager.RecoveryTile(RecoverY);
 
-        tileManager.SpawnNeedAddTiles();
+        TileManager.SpawnNeedAddTiles();
     }
 
     public void PlayerDie()
     {
         GameState = GameState.GameOver;
+    }
+
+    public void GetMoney(int val)
+    {
+        money += val;
     }
 }

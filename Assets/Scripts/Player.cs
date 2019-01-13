@@ -27,7 +27,7 @@ public class Player : MonoSingleton<Player>
 
     private void Update()
     {
-        if (GameManager.Instance.GameState != GameState.Running)
+        if (MainGameManager.Instance.GameState != GameState.Running)
         {
             return;
         }
@@ -39,7 +39,7 @@ public class Player : MonoSingleton<Player>
 
         if (isFly)
         {
-            transform.Translate(GameManager.GameData.playerFlySpeed
+            transform.Translate(MainGameManager.GameData.playerFlySpeed
                                 * Time.deltaTime * Vector3.up);
         }
 
@@ -47,12 +47,12 @@ public class Player : MonoSingleton<Player>
         var ori = transform.localPosition;
         if (Input.GetKey(KeyCode.A))
         {
-            acc.x -= GameManager.GameData.playerHorSpeed;
+            acc.x -= MainGameManager.GameData.playerHorSpeed;
             transform.localScale = leftDir;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            acc.x += GameManager.GameData.playerHorSpeed;
+            acc.x += MainGameManager.GameData.playerHorSpeed;
             transform.localScale = rightDir;
         }
 
@@ -75,7 +75,7 @@ public class Player : MonoSingleton<Player>
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (GameManager.Instance.GameState != GameState.Running)
+        if (MainGameManager.Instance.GameState != GameState.Running)
         {
             return;
         }
@@ -148,7 +148,7 @@ public class Player : MonoSingleton<Player>
     /// </summary>
     public bool CheckDie()
     {
-        if (transform.position.y < GameManager.Instance.RecoverY)
+        if (transform.position.y < MainGameManager.Instance.RecoverY)
         {
             return true;
         }
@@ -181,6 +181,6 @@ public class Player : MonoSingleton<Player>
     {
         rigi.gravityScale = 0;
         col2d.enabled = false;
-        GameManager.Instance.PlayerDie();
+        MainGameManager.Instance.PlayerDie();
     }
 }

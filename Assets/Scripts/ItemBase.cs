@@ -32,11 +32,11 @@ public class ItemBase : MonoBehaviour
         {
             case ItemType.Hat:
                 hat.SetActive(true);
-                flyTime = GameManager.GameData.hatFlyTime;
+                flyTime = MainGameManager.GameData.hatFlyTime;
                 break;
             case ItemType.Rocket:
                 rocket.SetActive(true);
-                flyTime = GameManager.GameData.rocketFlyTime;
+                flyTime = MainGameManager.GameData.rocketFlyTime;
                 break;
             default:
                 break;
@@ -67,7 +67,7 @@ public class ItemBase : MonoBehaviour
     {
         if (collision.CompareTag(Tags.Player))
         {
-            GameManager.Instance.itemManager.RecoveryItem(this);
+            MainGameManager.Instance.ItemManager.RecoveryItem(this);
             Player.Instance.Fly(itemType,flyTime);
         }
     }

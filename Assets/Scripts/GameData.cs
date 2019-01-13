@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 类型
@@ -38,6 +39,15 @@ public enum ItemType
     Rocket,
 }
 
+/// <summary>
+/// 金钱的类型,暂时只有硬币
+/// </summary>
+public enum MoneyType
+{
+    None=0,
+    Coin,
+}
+
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
@@ -65,15 +75,15 @@ public class GameData : ScriptableObject
     public string itemParent = "ItemParent";
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
-    public float hatWeight = 0.1f;
-    public float rocketWeight = 0.05f;
+    public float hatWeight = 0.075f;
+    public float rocketWeight = 0.025f;
 
 
     [Space(10), Header("Money")]
     public MoneyBase moneyPrefab;
     public string moneyParent = "MoneyParent";
-    public int moneyValue = 1;
-    public float moneyWeight = 0.1f;
+    public int coinValue = 1;
+    public float coinWeight = 0.1f;
 
 
     private float allTileWeight = -1;
@@ -104,6 +114,21 @@ public class GameData : ScriptableObject
             }
 
             return allItemWeight;
+        }
+    }
+
+    private float allMoneyWeight = -1;
+
+    public float AllMoenyWeight
+    {
+        get
+        {
+            if (allMoneyWeight < 0)
+            {
+                allMoneyWeight = 1 + coinWeight;
+            }
+
+            return allMoneyWeight;
         }
     }
 

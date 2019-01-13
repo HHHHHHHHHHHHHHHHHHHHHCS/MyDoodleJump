@@ -6,24 +6,26 @@ public class TileBase : MonoBehaviour
 {
     private const float downSpeed = 20;
 
-    [SerializeField]
-    private TileType tileType;
+    [SerializeField] private TileType tileType;
 
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D col2D;
     private Coroutine coroutine;
     private bool isDown;
-    private int moveDir;//-1 左下, 1 右上
+    private int moveDir; //-1 左下, 1 右上
     private Vector2 startPos;
 
-    public bool IsBind{ get; set; }
+    public bool IsBind { get; set; }
+
+    public ItemBase BindItem { get; set; }
+    public MoneyBase BindMoney { get; set; }
 
     public Vector3 CenterUpPos
     {
         get
         {
             Vector3 v3 = transform.position;
-            v3.y += spriteRenderer.sprite.bounds.size.y/2;
+            v3.y += spriteRenderer.sprite.bounds.size.y / 2;
             return v3;
         }
     }
@@ -39,39 +41,39 @@ public class TileBase : MonoBehaviour
         switch (tileType)
         {
             case TileType.MoveHorTile:
+            {
+                var moveHorTile = MainGameManager.GameData.moveHorTile;
+                Vector2 newPos = Vector2.zero;
+                newPos.x = moveDir * moveHorTile.speed * Time.deltaTime;
+                transform.Translate(newPos);
+                if (transform.position.x - startPos.x >= moveHorTile.distance)
                 {
-
-
-                    var moveHorTile = GameManager.GameData.moveHorTile;
-                    Vector2 newPos = Vector2.zero;
-                    newPos.x = moveDir * moveHorTile.speed * Time.deltaTime;
-                    transform.Translate(newPos);
-                    if (transform.position.x - startPos.x >= moveHorTile.distance)
-                    {
-                        moveDir = -1;
-                    }
-                    else if (transform.position.x - startPos.x <= -moveHorTile.distance)
-                    {
-                        moveDir = 1;
-                    }
-                    break;
+                    moveDir = -1;
                 }
+                else if (transform.position.x - startPos.x <= -moveHorTile.distance)
+                {
+                    moveDir = 1;
+                }
+
+                break;
+            }
             case TileType.MoveVerTile:
+            {
+                var moveVerTile = MainGameManager.GameData.moveVerTile;
+                Vector2 newPos = Vector2.zero;
+                newPos.y = moveDir * moveVerTile.speed * Time.deltaTime;
+                transform.Translate(newPos);
+                if (transform.position.y - startPos.y >= moveVerTile.distance)
                 {
-                    var moveVerTile = GameManager.GameData.moveVerTile;
-                    Vector2 newPos = Vector2.zero;
-                    newPos.y = moveDir * moveVerTile.speed * Time.deltaTime;
-                    transform.Translate(newPos);
-                    if (transform.position.y - startPos.y >= moveVerTile.distance)
-                    {
-                        moveDir = -1;
-                    }
-                    else if (transform.position.y - startPos.y <= -moveVerTile.distance)
-                    {
-                        moveDir = 1;
-                    }
-                    break;
+                    moveDir = -1;
                 }
+                else if (transform.position.y - startPos.y <= -moveVerTile.distance)
+                {
+                    moveDir = 1;
+                }
+
+                break;
+            }
         }
     }
 
@@ -86,6 +88,7 @@ public class TileBase : MonoBehaviour
         {
             moveDir = Random.value < 0.5f ? -1 : 1;
         }
+
         transform.position = pos;
         Active();
         gameObject.SetActive(true);
@@ -107,8 +110,8 @@ public class TileBase : MonoBehaviour
     public void Active()
     {
         col2D.enabled = true;
-        var sprites = GameManager.GameData.titleSprite;
-        int type = (int)tileType;
+        var sprites = MainGameManager.GameData.titleSprite;
+        int type = (int) tileType;
         if (type < sprites.Length)
         {
             spriteRenderer.sprite = sprites[type];
@@ -146,6 +149,7 @@ public class TileBase : MonoBehaviour
                 default:
                     break;
             }
+
             player.Jump(jumpScale);
         }
     }
@@ -181,17 +185,16 @@ public class TileBase : MonoBehaviour
     {
         while (isDown)
         {
-            if (GameManager.Instance.tileManager.NeedRecoveryTile(this))
+            if (MainGameManager.Instance.TileManager.NeedRecoveryTile(this))
             {
                 StopFallDown();
                 yield break;
             }
+
             var pos = transform.localPosition;
             pos.y -= downSpeed * Time.deltaTime;
             transform.localPosition = pos;
             yield return null;
         }
     }
-
-
 }

@@ -27,7 +27,7 @@ public class TileManager
 
     public TileManager()
     {
-        gameData = GameManager.GameData;
+        gameData = MainGameManager.GameData;
         currentTilePosY= gameData.startTilePosY;
 
         ShowTileList = new List<TileBase>();
@@ -150,7 +150,7 @@ public class TileManager
     /// </summary>
     public bool NeedRecoveryTile(TileBase tile)
     {
-        if (tile.transform.position.y > GameManager.Instance.RecoverY)
+        if (tile.transform.position.y > MainGameManager.Instance.RecoverY)
         {
             return false;
         }
