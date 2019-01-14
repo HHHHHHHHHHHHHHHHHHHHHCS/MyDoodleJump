@@ -55,7 +55,7 @@ public class GameData : ScriptableObject
 
     [Space(10), Header("Player")]
     public float playerHorSpeed = 0.1f;
-    public float playerFlySpeed = 5f;
+    public float playerFlySpeed = 15f;
 
 
     [Space(10), Header("Tile")]
@@ -75,8 +75,8 @@ public class GameData : ScriptableObject
     public string itemParent = "ItemParent";
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
-    public float hatWeight = 0.075f;
-    public float rocketWeight = 0.025f;
+    public float hatWeight = 0.05f;
+    public float rocketWeight = 0.01f;
 
 
     [Space(10), Header("Money")]

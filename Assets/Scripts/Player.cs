@@ -39,6 +39,7 @@ public class Player : MonoSingleton<Player>
 
         if (isFly)
         {
+            rigi.velocity = Vector2.zero;
             transform.Translate(MainGameManager.GameData.playerFlySpeed
                                 * Time.deltaTime * Vector3.up);
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 物品和money会重复
+/// 金钱管理
 /// </summary>
 public class MoneyManager
 {
@@ -38,7 +38,7 @@ public class MoneyManager
     public MoneyType CheckNeedCreate()
     {
         var rd = Random.Range(0, gameData.AllMoenyWeight);
-        if (rd < 1)
+        if (rd <= 1)
         {
             return MoneyType.None;
         }
@@ -57,7 +57,7 @@ public class MoneyManager
     /// 创建金钱
     /// </summary>
     /// <param name="tile"></param>
-    public void CreateMoney(TileBase tile)
+    public void SpawnMoney(TileBase tile)
     {
         if (!tile.IsBind)
         {
@@ -65,6 +65,8 @@ public class MoneyManager
             if (type != MoneyType.None)
             {
                 var temp = MoneyPool.Get();
+                tile.IsBind = true;
+                tile.BindMoney = temp;
                 temp.Init(tile, type);
                 ShowMoneyList.Add(temp);
             }
@@ -77,6 +79,7 @@ public class MoneyManager
     /// </summary>
     public void RecoveryMoney(MoneyBase money)
     {
+        money.BindTile.BindMoney = null;
         money.BindTile.IsBind = false;
         money.HideAll();
         ShowMoneyList.Remove(money);

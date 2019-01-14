@@ -29,6 +29,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public TileManager TileManager{ get; private set; }
     public ItemManager ItemManager { get; private set; }
     public MoneyManager MoneyManager { get; private set; }
+    public BackgroundManager BackgroundManager { get; private set; }
 
     /// <summary>
     /// 游戏数据
@@ -57,10 +58,11 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         TileManager = new TileManager();
         ItemManager = new ItemManager();
         MoneyManager=new MoneyManager();
+        BackgroundManager = new BackgroundManager();
 
 
         TileManager.createTileCallback += ItemManager.SpawnItem;
-        TileManager.createTileCallback += MoneyManager.CreateMoney;
+        TileManager.createTileCallback += MoneyManager.SpawnMoney;
 
         TileManager.recoveryCallback += ItemManager.RecoveryBindItem;
         TileManager.recoveryCallback += MoneyManager.RecoveryBindMoney;
@@ -68,6 +70,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     private void Start()
     {
+        BackgroundManager.OnStart();
         TileManager.CreateStartTiles();
     }
 
@@ -101,8 +104,8 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public void DoRecovery(float nowY)
     {
         RecoverY = nowY - recoveryTileY;
+        BackgroundManager.OnUpdate(nowY);
         TileManager.RecoveryTile(RecoverY);
-
         TileManager.SpawnNeedAddTiles();
     }
 

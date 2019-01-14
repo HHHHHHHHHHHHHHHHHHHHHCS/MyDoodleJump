@@ -23,19 +23,19 @@ public class ItemManager
     public ItemType CheckNeedCreate()
     {
         var rd = Random.Range(0, gameData.AllItemWeight);
-        if (rd < 1)
+        if (rd <= 1)
         {
             return ItemType.None;
         }
 
         rd -= 1;
-        if (rd < gameData.hatWeight)
+        if (rd <= gameData.hatWeight)
         {
             return ItemType.Hat;
         }
 
         rd -= gameData.hatWeight;
-        if (rd < gameData.rocketWeight)
+        if (rd <= gameData.rocketWeight)
         {
             return ItemType.Rocket;
         }
@@ -65,6 +65,8 @@ public class ItemManager
             if (type != ItemType.None)
             {
                 var temp = ItemPool.Get();
+                tile.IsBind = true;
+                tile.BindItem = temp;
                 temp.Init(tile, type);
                 ShowItemList.Add(temp);
             }
@@ -76,6 +78,7 @@ public class ItemManager
     /// </summary>
     public void RecoveryItem(ItemBase item)
     {
+        item.BindTile.BindItem = null;
         item.BindTile.IsBind = false;
         item.HideAll();
         ShowItemList.Remove(item);
