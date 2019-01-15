@@ -13,7 +13,7 @@ public class TileManager
     public event Action<TileBase> createTileCallback;
     public event Action<TileBase> recoveryCallback;
 
-    private readonly GameData gameData;
+    private GameData gameData;
 
     /// <summary>
     /// 当前跳板的位置
@@ -28,7 +28,7 @@ public class TileManager
     private Transform platform;
 
 
-    public TileManager()
+    public TileManager OnInit()
     {
         gameData = MainGameManager.GameData;
         currentTilePosY = gameData.startTilePosY;
@@ -37,6 +37,7 @@ public class TileManager
         TilePool = new ObjectPool<TileBase>(gameData.tilePrefab, 20, gameData.tileParent);
 
         platform = GameObject.Find("Platform").transform;
+        return this;
     }
 
     public void CreateStartTiles()
@@ -118,31 +119,26 @@ public class TileManager
             return 0;
         }
 
-        rand -= gameData.normalTile.weight;
         if (rand <= gameData.brokenTile.weight)
         {
             return 1;
         }
 
-        rand -= gameData.brokenTile.weight;
         if (rand <= gameData.onceTile.weight)
         {
             return 2;
         }
 
-        rand -= gameData.onceTile.weight;
         if (rand <= gameData.springTile.weight)
         {
             return 3;
         }
 
-        rand -= gameData.springTile.weight;
         if (rand <= gameData.moveHorTile.weight)
         {
             return 4;
         }
 
-        rand -= gameData.moveHorTile.weight;
         if (rand <= gameData.moveVerTile.weight)
         {
             return 5;

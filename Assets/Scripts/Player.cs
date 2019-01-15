@@ -25,7 +25,7 @@ public class Player : MonoSingleton<Player>
         Pause();
     }
 
-    private void Update()
+    public void OnUpdate()
     {
         if (MainGameManager.Instance.GameState != GameState.Running)
         {

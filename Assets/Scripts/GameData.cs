@@ -29,37 +29,17 @@ public enum GameState
     GameOver,
 }
 
-/// <summary>
-/// 物品类型
-/// </summary>
-public enum ItemType
-{
-    None = 0,
-    Hat,
-    Rocket,
-}
-
-/// <summary>
-/// 金钱的类型,暂时只有硬币
-/// </summary>
-public enum MoneyType
-{
-    None=0,
-    Coin,
-}
 
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
 
 
-    [Space(10), Header("Player")]
-    public float playerHorSpeed = 0.1f;
+    [Space(10), Header("Player")] public float playerHorSpeed = 0.1f;
     public float playerFlySpeed = 15f;
 
 
-    [Space(10), Header("Tile")]
-    public float startTilePosY = -4;
+    [Space(10), Header("Tile")] public float startTilePosY = -4;
     public TileBase tilePrefab;
     public string tileParent = "TileParent";
     public Sprite[] titleSprite;
@@ -70,8 +50,7 @@ public class GameData : ScriptableObject
     public MoveHorTile moveHorTile;
     public MoveVerTile moveVerTile;
 
-    [Space(10), Header("Item")]
-    public ItemBase itemPrefab;
+    [Space(10), Header("Item")] public ItemBase itemPrefab;
     public string itemParent = "ItemParent";
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
@@ -79,57 +58,55 @@ public class GameData : ScriptableObject
     public float rocketWeight = 0.01f;
 
 
-    [Space(10), Header("Money")]
-    public MoneyBase moneyPrefab;
+    [Space(10), Header("Money")] public MoneyBase moneyPrefab;
     public string moneyParent = "MoneyParent";
     public int coinValue = 1;
     public float coinWeight = 0.1f;
 
+    [Space(10), Header("Enemy")] public EnemyBase enemyPrefab;
+    public string enemyParent = "EnemyParent";
+    public float enemy1Weight = 0.05f;
+    public float enemy2Weight = 0.025f;
+    public float enemy3Weight = 0.025f;
+    public float enemy2MoveSpeed = 1f;
+    public float enemy3MoveSpeed = 0.75f;
+    public float enemyMinHeight = 1;
+    public float enemyMaxHeight = 3;
 
-    private float allTileWeight = -1;
+    public float AllTileWeight { get; private set; }
+    public float AllItemWeight { get; private set; }
+    public float AllMoneyWeight { get; private set; }
+    public float AllEnemyWeight { get; private set; }
 
-    public float AllTileWeight
+    public bool IsInit { get; private set; }
+
+    public GameData OnInit()
     {
-        get
+        if (IsInit)
         {
-            if (allTileWeight < 0)
-            {
-                allTileWeight = normalTile.weight + brokenTile.weight + onceTile.weight
-                                + springTile.weight + moveHorTile.weight + moveVerTile.weight;
-            }
-
-            return allTileWeight;
+            return this;
         }
-    }
 
-    private float allItemWeight = -1;
+        brokenTile.weight += normalTile.weight;
+        onceTile.weight += brokenTile.weight;
+        springTile.weight += onceTile.weight;
+        moveHorTile.weight += springTile.weight;
+        moveVerTile.weight += moveHorTile.weight;
+        AllTileWeight = moveVerTile.weight;
 
-    public float AllItemWeight
-    {
-        get
-        {
-            if (allItemWeight < 0)
-            {
-                allItemWeight = 1 + hatWeight + rocketWeight;
-            }
+        hatWeight += 1;
+        rocketWeight += hatWeight;
+        AllItemWeight = rocketWeight;
 
-            return allItemWeight;
-        }
-    }
+        coinWeight += 1;
+        AllMoneyWeight = coinWeight;
 
-    private float allMoneyWeight = -1;
+        enemy1Weight += 1;
+        enemy2Weight += enemy1Weight;
+        enemy3Weight += enemy2Weight;
+        AllEnemyWeight = enemy3Weight;
 
-    public float AllMoenyWeight
-    {
-        get
-        {
-            if (allMoneyWeight < 0)
-            {
-                allMoneyWeight = 1 + coinWeight;
-            }
-
-            return allMoneyWeight;
-        }
+        return this;
     }
 
 #if UNITY_EDITOR

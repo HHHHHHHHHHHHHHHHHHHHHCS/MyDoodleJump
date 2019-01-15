@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// 金钱的类型,暂时只有硬币
+/// </summary>
+public enum MoneyType
+{
+    None = 0,
+    Coin,
+}
+
+/// <summary>
 /// 金钱管理
 /// </summary>
 public class MoneyManager
@@ -10,13 +19,14 @@ public class MoneyManager
     public List<MoneyBase> ShowMoneyList { get; private set; }
     public ObjectPool<MoneyBase> MoneyPool { get; private set; }
 
-    private readonly GameData gameData;
+    private GameData gameData;
 
-    public MoneyManager()
+    public MoneyManager OnInit()
     {
         gameData = MainGameManager.GameData;
         ShowMoneyList = new List<MoneyBase>();
         MoneyPool = new ObjectPool<MoneyBase>(gameData.moneyPrefab, 0, gameData.moneyParent);
+        return this;
     }
 
 
@@ -37,13 +47,12 @@ public class MoneyManager
     /// <returns></returns>
     public MoneyType CheckNeedCreate()
     {
-        var rd = Random.Range(0, gameData.AllMoenyWeight);
+        var rd = Random.Range(0, gameData.AllMoneyWeight);
         if (rd <= 1)
         {
             return MoneyType.None;
         }
 
-        rd -= 1;
         if (rd <= gameData.coinWeight)
         {
             return MoneyType.Coin;

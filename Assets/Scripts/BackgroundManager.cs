@@ -9,7 +9,7 @@ public class BackgroundManager
     private Transform[] brackgrounds;
     private float highPosY = int.MinValue;
 
-    public void OnStart()
+    public BackgroundManager OnInit()
     {
         var bgs = GameObject.Find("Backgrounds").transform;
         brackgrounds = new Transform[bgs.childCount];
@@ -21,6 +21,8 @@ public class BackgroundManager
                 highPosY = brackgrounds[i].position.y;
             }
         }
+
+        return this;
     }
 
     public void OnUpdate(float nowY)

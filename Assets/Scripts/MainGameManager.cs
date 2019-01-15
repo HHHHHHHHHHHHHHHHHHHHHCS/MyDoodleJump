@@ -17,7 +17,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     /// 游戏数据
     /// </summary>
     [field:SerializeField]
-    public GameData gameData { get; private set; }
+    private GameData gameData {  get;  set; }
 
 
     /// <summary>
@@ -29,12 +29,13 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public TileManager TileManager{ get; private set; }
     public ItemManager ItemManager { get; private set; }
     public MoneyManager MoneyManager { get; private set; }
+    public EnemyManager EnemyManager { get; private set; }//todo:
     public BackgroundManager BackgroundManager { get; private set; }
 
     /// <summary>
     /// 游戏数据
     /// </summary>
-    public static GameData GameData => Instance.gameData;
+    public static GameData GameData { get; private set; }
 
     /// <summary>
     /// 游戏状态
@@ -53,12 +54,14 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     protected override void OnAwake()
     {
+        GameData = gameData.OnInit();
         Player = GameObject.Find("Player").GetComponent<Player>();
 
-        TileManager = new TileManager();
-        ItemManager = new ItemManager();
-        MoneyManager=new MoneyManager();
-        BackgroundManager = new BackgroundManager();
+
+        TileManager = new TileManager().OnInit();
+        ItemManager = new ItemManager().OnInit();
+        MoneyManager=new MoneyManager().OnInit();
+        BackgroundManager = new BackgroundManager().OnInit();
 
 
         TileManager.createTileCallback += ItemManager.SpawnItem;
@@ -70,7 +73,6 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     private void Start()
     {
-        BackgroundManager.OnStart();
         TileManager.CreateStartTiles();
     }
 
@@ -92,6 +94,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
             return;
         }
 
+        Player.OnUpdate();
         TileManager.OnUpdate();
         ItemManager.OnUpdate();
         MoneyManager.OnUpdate();

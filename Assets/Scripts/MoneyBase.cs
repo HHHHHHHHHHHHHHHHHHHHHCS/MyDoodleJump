@@ -27,7 +27,7 @@ public class MoneyBase : MonoBehaviour
         {
             case MoneyType.Coin:
                 coin.SetActive(true);
-                moneyValue = MainGameManager.Instance.gameData.coinValue;
+                moneyValue = MainGameManager.GameData.coinValue;
                 break;
         }
 

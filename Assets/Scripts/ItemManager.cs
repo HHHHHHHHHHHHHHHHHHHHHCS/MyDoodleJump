@@ -2,18 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// 物品类型
+/// </summary>
+public enum ItemType
+{
+    None = 0,
+    Hat,
+    Rocket,
+}
+
+/// <summary>
+/// 物品管理器
+/// </summary>
 public class ItemManager
 {
     public List<ItemBase> ShowItemList { get; private set; }
     public ObjectPool<ItemBase> ItemPool { get; private set; }
 
-    private readonly GameData gameData;
+    private GameData gameData;
 
-    public ItemManager()
+    public ItemManager OnInit()
     {
         gameData = MainGameManager.GameData;
         ShowItemList = new List<ItemBase>();
         ItemPool = new ObjectPool<ItemBase>(gameData.itemPrefab, 0, gameData.itemParent);
+        return this;
     }
 
 
@@ -28,13 +43,11 @@ public class ItemManager
             return ItemType.None;
         }
 
-        rd -= 1;
         if (rd <= gameData.hatWeight)
         {
             return ItemType.Hat;
         }
 
-        rd -= gameData.hatWeight;
         if (rd <= gameData.rocketWeight)
         {
             return ItemType.Rocket;
