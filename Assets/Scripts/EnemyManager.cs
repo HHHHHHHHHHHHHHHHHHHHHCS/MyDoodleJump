@@ -33,9 +33,9 @@ public class EnemyManager
 
     public void OnUpdate()
     {
-        foreach (var enemy in ShowEnemyList)
+        for(int i = ShowEnemyList.Count-1;i>=0;i--)
         {
-            enemy.OnUpdate();
+            ShowEnemyList[i].OnUpdate();
         }
     }
 
@@ -44,7 +44,7 @@ public class EnemyManager
     /// </summary>
     public EnemyType CheckNeedCreate()
     {
-        var rd = Random.Range(0, gameData.AllItemWeight);
+        var rd = Random.Range(0, gameData.AllEnemyWeight);
         if (rd <= 1)
         {
             return EnemyType.None;

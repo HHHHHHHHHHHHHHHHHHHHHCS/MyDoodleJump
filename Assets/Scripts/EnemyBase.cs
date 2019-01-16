@@ -41,6 +41,7 @@ public class EnemyBase : MonoBehaviour
                 moveSpeed = Vector3.right * MainGameManager.GameData.enemy2Weight;
                 break;
         }
+        gameObject.SetActive(true);
     }
 
     public void OnUpdate()
@@ -48,13 +49,13 @@ public class EnemyBase : MonoBehaviour
         var manager = MainGameManager.Instance;
         if (transform.position.y < manager.RecoverY)
         {
-            manager.
+            manager.EnemyManager.RecoveryEnemy(this);
         }
 
         if (direction != 0)
         {
             transform.Translate(moveSpeed * Time.deltaTime * direction);
-            if (transform.position.x <= GameData.xMinBorder)
+            if (transform.position.x <= GameData.xSafeMinBorder)
             {
                 if (enemyType == EnemyType.Enemy2)
                 {
@@ -63,11 +64,11 @@ public class EnemyBase : MonoBehaviour
                 else if (enemyType == EnemyType.Enemy3)
                 {
                     Vector3 pos = transform.position;
-                    pos.x = GameData.xMaxBorder;
+                    pos.x = GameData.xSafeMaxBorder;
                     transform.position = pos;
                 }
             }
-            else if (transform.position.x >= GameData.xMaxBorder)
+            else if (transform.position.x >= GameData.xSafeMaxBorder)
             {
                 if (enemyType == EnemyType.Enemy2)
                 {
@@ -76,7 +77,7 @@ public class EnemyBase : MonoBehaviour
                 else if (enemyType == EnemyType.Enemy3)
                 {
                     Vector3 pos = transform.position;
-                    pos.x = GameData.xMinBorder;
+                    pos.x = GameData.xSafeMinBorder;
                     transform.position = pos;
                 }
             }
@@ -88,5 +89,23 @@ public class EnemyBase : MonoBehaviour
         enemy1.SetActive(false);
         enemy2.SetActive(false);
         enemy3.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (MainGameManager.Instance.GameState != GameState.Running)
+        {
+            return;
+        }
+
+        if (collision.CompareTag(Tags.Player))
+        {
+            MainGameManager.Instance.PlayerDie();
+        }
+
+        if (collision.CompareTag(Tags.Bullet))
+        {
+
+        }
     }
 }

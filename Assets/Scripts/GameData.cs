@@ -33,7 +33,7 @@ public enum GameState
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
-
+    public const float xSafeMinBorder = -5f, xSafeMaxBorder = 5f;
 
     [Space(10), Header("Player")] public float playerHorSpeed = 0.1f;
     public float playerFlySpeed = 15f;
@@ -43,12 +43,52 @@ public class GameData : ScriptableObject
     public TileBase tilePrefab;
     public string tileParent = "TileParent";
     public Sprite[] titleSprite;
-    public NormalTile normalTile;
-    public BrokenTile brokenTile;
-    public OnceTile onceTile;
-    public SpringTile springTile;
-    public MoveHorTile moveHorTile;
-    public MoveVerTile moveVerTile;
+
+    public NormalTile normalTile = new NormalTile()
+    {
+        minHeight = 1,
+        maxHeight = 2,
+        weight = 80,
+    };
+
+    public BrokenTile brokenTile = new BrokenTile()
+    {
+        minHeight = 1.1f,
+        maxHeight = 2,
+        weight = 40,
+    };
+
+    public OnceTile onceTile = new OnceTile()
+    {
+        minHeight = 1.2f,
+        maxHeight = 2.4f,
+        weight = 20,
+    };
+
+    public SpringTile springTile = new SpringTile()
+    {
+        minHeight = 1.3f,
+        maxHeight = 2.6f,
+        weight = 15
+    };
+
+    public MoveHorTile moveHorTile = new MoveHorTile()
+    {
+        minHeight = 1.4f,
+        maxHeight = 2.6f,
+        weight = 10,
+        distance = 1.6f,
+        speed = 1,
+    };
+
+    public MoveVerTile moveVerTile = new MoveVerTile()
+    {
+        minHeight = 1.4f,
+        maxHeight = 2.6f,
+        weight = 10,
+        distance = 2,
+        speed = 0.7f,
+    };
 
     [Space(10), Header("Item")] public ItemBase itemPrefab;
     public string itemParent = "ItemParent";
@@ -65,13 +105,19 @@ public class GameData : ScriptableObject
 
     [Space(10), Header("Enemy")] public EnemyBase enemyPrefab;
     public string enemyParent = "EnemyParent";
-    public float enemy1Weight = 0.05f;
-    public float enemy2Weight = 0.025f;
-    public float enemy3Weight = 0.025f;
+    public float enemy1Weight = 0.02f;
+    public float enemy2Weight = 0.01f;
+    public float enemy3Weight = 0.01f;
     public float enemy2MoveSpeed = 1f;
     public float enemy3MoveSpeed = 0.75f;
     public float enemyMinHeight = 1;
     public float enemyMaxHeight = 3;
+
+    [Space(10), Header("Bullet")] public BulletBase bulletPrefab;
+    public string bulletParent = "EnemyParent";
+    public float bulletMoveSpeed = 3f;
+    public float bulletNextTime = 0.2f;
+    public float bulletDestroyTime = 1f;
 
     public float AllTileWeight { get; private set; }
     public float AllItemWeight { get; private set; }
@@ -109,6 +155,13 @@ public class GameData : ScriptableObject
         return this;
     }
 
+    public GameData Clone()
+    {
+        var data = MemberwiseClone() as GameData;
+        data.OnInit();
+        return data;
+    }
+
 #if UNITY_EDITOR
     [MenuItem("Data/SaveData")]
     static void CreateExampleAsset()
@@ -126,4 +179,5 @@ public class Tags
 {
     public const string Player = "Player";
     public const string Platform = "Platform";
+    public const string Bullet = "Bullet";
 }

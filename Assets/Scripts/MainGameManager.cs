@@ -29,7 +29,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public TileManager TileManager{ get; private set; }
     public ItemManager ItemManager { get; private set; }
     public MoneyManager MoneyManager { get; private set; }
-    public EnemyManager EnemyManager { get; private set; }//todo:
+    public EnemyManager EnemyManager { get; private set; }
     public BackgroundManager BackgroundManager { get; private set; }
 
     /// <summary>
@@ -54,18 +54,20 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     protected override void OnAwake()
     {
-        GameData = gameData.OnInit();
+        GameData = gameData.Clone();
         Player = GameObject.Find("Player").GetComponent<Player>();
 
 
         TileManager = new TileManager().OnInit();
         ItemManager = new ItemManager().OnInit();
         MoneyManager=new MoneyManager().OnInit();
+        EnemyManager = new EnemyManager().OnInit();
         BackgroundManager = new BackgroundManager().OnInit();
 
 
         TileManager.createTileCallback += ItemManager.SpawnItem;
         TileManager.createTileCallback += MoneyManager.SpawnMoney;
+        TileManager.createTileCallback += EnemyManager.SpawnEnemy;
 
         TileManager.recoveryCallback += ItemManager.RecoveryBindItem;
         TileManager.recoveryCallback += MoneyManager.RecoveryBindMoney;
@@ -97,6 +99,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         Player.OnUpdate();
         TileManager.OnUpdate();
         ItemManager.OnUpdate();
+        EnemyManager.OnUpdate();
         MoneyManager.OnUpdate();
     }
 

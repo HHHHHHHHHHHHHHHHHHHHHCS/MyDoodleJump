@@ -124,6 +124,11 @@ public class TileBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (MainGameManager.Instance.GameState != GameState.Running)
+        {
+            return;
+        }
+
         if (collision.CompareTag(Tags.Player)
             && collision.GetComponent<Rigidbody2D>().velocity.y <= 0)
         {

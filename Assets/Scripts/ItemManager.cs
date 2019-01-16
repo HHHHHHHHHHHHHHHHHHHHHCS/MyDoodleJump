@@ -38,6 +38,7 @@ public class ItemManager
     public ItemType CheckNeedCreate()
     {
         var rd = Random.Range(0, gameData.AllItemWeight);
+
         if (rd <= 1)
         {
             return ItemType.None;
