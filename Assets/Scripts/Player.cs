@@ -7,18 +7,28 @@ public class Player : MonoSingleton<Player>
     private readonly Vector3 leftDir = new Vector3(-1, 1, 1),
         rightDir = new Vector3(1, 1, 1);
 
+    [SerializeField]
+    private Sprite shootSprite;
+    private Sprite normalSprite;
+
+
     private float leftBorder, rightBorder;
     private Rigidbody2D rigi;
     private Collider2D col2d;
     private GameObject hat_Used, rocket_Used;
     private bool isFly;
+    private Transform bulletPoint;
+    private SpriteRenderer spr;
 
     protected override void OnAwake()
     {
+        spr = GetComponent<SpriteRenderer>();
         rigi = GetComponent<Rigidbody2D>();
         col2d = GetComponent<Collider2D>();
         hat_Used = transform.Find("Hat_Used").gameObject;
         rocket_Used = transform.Find("Rocket_Used").gameObject;
+        bulletPoint = transform.Find("BulletPoint");
+        normalSprite = spr.sprite;
         var mainCam = Camera.main;
         leftBorder = mainCam.ViewportToWorldPoint(Vector3.zero).x;
         rightBorder = mainCam.ViewportToWorldPoint(Vector3.right).x;
@@ -43,6 +53,14 @@ public class Player : MonoSingleton<Player>
             transform.Translate(MainGameManager.GameData.playerFlySpeed
                                 * Time.deltaTime * Vector3.up);
         }
+
+        Move();
+
+        ShootBullet();
+    }
+
+    private void Move()
+    {
 
         Vector3 acc = Vector3.zero;
         var ori = transform.localPosition;
@@ -72,6 +90,14 @@ public class Player : MonoSingleton<Player>
         }
 
         transform.localPosition = diff;
+    }
+
+    private void ShootBullet()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            MainGameManager.Instance.BulletManager.SpawnBullet(bulletPoint.position, Input.mousePosition);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

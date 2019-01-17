@@ -30,6 +30,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public ItemManager ItemManager { get; private set; }
     public MoneyManager MoneyManager { get; private set; }
     public EnemyManager EnemyManager { get; private set; }
+    public BulletManager BulletManager { get; private set; }
     public BackgroundManager BackgroundManager { get; private set; }
 
     /// <summary>
@@ -62,6 +63,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         ItemManager = new ItemManager().OnInit();
         MoneyManager=new MoneyManager().OnInit();
         EnemyManager = new EnemyManager().OnInit();
+        BulletManager = new BulletManager().OnInit();
         BackgroundManager = new BackgroundManager().OnInit();
 
 
@@ -101,6 +103,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         ItemManager.OnUpdate();
         EnemyManager.OnUpdate();
         MoneyManager.OnUpdate();
+        BulletManager.OnUpdate();
     }
 
     /// <summary>

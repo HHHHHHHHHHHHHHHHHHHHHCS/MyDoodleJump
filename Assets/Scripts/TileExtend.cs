@@ -11,7 +11,7 @@ public enum TileType
 }
 
 [Serializable]
-public class NormalTile
+public struct NormalTile
 {
     /// <summary>
     /// 最小的高度
@@ -28,26 +28,71 @@ public class NormalTile
 }
 
 [Serializable]
-public class BrokenTile : NormalTile
+public struct BrokenTile
 {
-
+    /// <summary>
+    /// 最小的高度
+    /// </summary>
+    public float minHeight;
+    /// <summary>
+    /// 最大的高度
+    /// </summary>
+    public float maxHeight;
+    /// <summary>
+    /// 生成的权值
+    /// </summary>
+    public float weight;
 }
 
 [Serializable]
-public class OnceTile : NormalTile
+public struct OnceTile 
 {
-
+    /// <summary>
+    /// 最小的高度
+    /// </summary>
+    public float minHeight;
+    /// <summary>
+    /// 最大的高度
+    /// </summary>
+    public float maxHeight;
+    /// <summary>
+    /// 生成的权值
+    /// </summary>
+    public float weight;
 }
 
 [Serializable]
-public class SpringTile : NormalTile
+public struct SpringTile 
 {
-
+    /// <summary>
+    /// 最小的高度
+    /// </summary>
+    public float minHeight;
+    /// <summary>
+    /// 最大的高度
+    /// </summary>
+    public float maxHeight;
+    /// <summary>
+    /// 生成的权值
+    /// </summary>
+    public float weight;
 }
 
 [Serializable]
-public class MoveHorTile : NormalTile
+public struct MoveHorTile 
 {
+    /// <summary>
+    /// 最小的高度
+    /// </summary>
+    public float minHeight;
+    /// <summary>
+    /// 最大的高度
+    /// </summary>
+    public float maxHeight;
+    /// <summary>
+    /// 生成的权值
+    /// </summary>
+    public float weight;
     /// <summary>
     /// 移动的距离
     /// </summary>
@@ -59,7 +104,26 @@ public class MoveHorTile : NormalTile
 }
 
 [Serializable]
-public class MoveVerTile : MoveHorTile
+public struct MoveVerTile 
 {
-
+    /// <summary>
+    /// 最小的高度
+    /// </summary>
+    public float minHeight;
+    /// <summary>
+    /// 最大的高度
+    /// </summary>
+    public float maxHeight;
+    /// <summary>
+    /// 生成的权值
+    /// </summary>
+    public float weight;
+    /// <summary>
+    /// 移动的距离
+    /// </summary>
+    public float distance;
+    /// <summary>
+    /// 移动的速度
+    /// </summary>
+    public float speed;
 }

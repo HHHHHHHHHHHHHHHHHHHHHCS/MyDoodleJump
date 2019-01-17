@@ -93,19 +93,23 @@ public class EnemyBase : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (MainGameManager.Instance.GameState != GameState.Running)
+        var manager = MainGameManager.Instance;
+        if (manager.GameState != GameState.Running)
         {
             return;
         }
 
-        if (collision.CompareTag(Tags.Player))
-        {
-            MainGameManager.Instance.PlayerDie();
-        }
-
         if (collision.CompareTag(Tags.Bullet))
         {
-
+            manager.BulletManager.RecoveryBullet(collision.GetComponent<BulletBase>());
+            manager.EnemyManager.RecoveryEnemy(this);
         }
+
+        if (collision.CompareTag(Tags.Player))
+        {
+            manager.PlayerDie();
+        }
+
+
     }
 }

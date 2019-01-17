@@ -114,7 +114,7 @@ public class GameData : ScriptableObject
     public float enemyMaxHeight = 3;
 
     [Space(10), Header("Bullet")] public BulletBase bulletPrefab;
-    public string bulletParent = "EnemyParent";
+    public string bulletParent = "BulletParent";
     public float bulletMoveSpeed = 3f;
     public float bulletNextTime = 0.2f;
     public float bulletDestroyTime = 1f;

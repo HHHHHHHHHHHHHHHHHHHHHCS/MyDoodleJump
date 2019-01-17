@@ -7,11 +7,13 @@ public class BulletBase : MonoBehaviour
     private Vector3 moveDir;
     private float destroyTimer;
 
-    public void OnInit(Vector3 dir)
+    public void OnInit(Vector3 spawnPoint,Vector3 dir)
     {
+        transform.position = spawnPoint;
         GameData data = MainGameManager.GameData;
         moveDir = dir * data.bulletMoveSpeed;
         destroyTimer = data.bulletDestroyTime;
+        gameObject.SetActive(true);
     }
 
     public void OnUpdate()
@@ -19,11 +21,11 @@ public class BulletBase : MonoBehaviour
         destroyTimer -= Time.deltaTime;
         if (destroyTimer<=0)
         {
-            //回收自己
+            MainGameManager.Instance.BulletManager.RecoveryBullet(this);
         }
         else
         {
-            transform.Translate(moveDir);
+            transform.Translate(moveDir*Time.deltaTime);
         }
     }
 }

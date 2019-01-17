@@ -26,10 +26,32 @@ public class BulletManager
         {
             bulletNextTimer -= Time.deltaTime;
         }
+
+        for (int i = ShowBulletList.Count - 1; i >= 0; i--)
+        {
+            ShowBulletList[i].OnUpdate();
+        }
     }
 
-    public void SpawnBullet(Vector3 touchPos)
+    public void SpawnBullet(Vector3 spawnPoint, Vector3 touchPos)
     {
-        var pos = mainCam.WorldToViewportPoint(Player.Instance.transform.position);
+        if (bulletNextTimer > 0)
+        {
+            return;
+        }
+
+        touchPos =mainCam.ScreenToWorldPoint(touchPos);
+        touchPos.z = spawnPoint.z;
+        bulletNextTimer = gameData.bulletNextTime;
+        var temp = BulletPool.Get();
+        var dir = (touchPos - spawnPoint).normalized;
+        temp.OnInit(spawnPoint, dir);
+        ShowBulletList.Add(temp);
+    }
+
+    public void RecoveryBullet(BulletBase bullet)
+    {
+        ShowBulletList.Remove(bullet);
+        BulletPool.Put(bullet);
     }
 }
