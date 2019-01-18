@@ -33,11 +33,11 @@ public class BulletManager
         }
     }
 
-    public void SpawnBullet(Vector3 spawnPoint, Vector3 touchPos)
+    public bool SpawnBullet(Vector3 spawnPoint, Vector3 touchPos)
     {
         if (bulletNextTimer > 0)
         {
-            return;
+            return false;
         }
 
         touchPos =mainCam.ScreenToWorldPoint(touchPos);
@@ -47,6 +47,7 @@ public class BulletManager
         var dir = (touchPos - spawnPoint).normalized;
         temp.OnInit(spawnPoint, dir);
         ShowBulletList.Add(temp);
+        return true;
     }
 
     public void RecoveryBullet(BulletBase bullet)

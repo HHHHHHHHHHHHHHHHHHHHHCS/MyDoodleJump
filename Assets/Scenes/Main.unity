@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e241a911cf3f8a4daf60c53c6453063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <gameData>k__BackingField: {fileID: 11400000, guid: aaec07fca66d053449cd2ba326365d77,
+  <_gameData>k__BackingField: {fileID: 11400000, guid: aaec07fca66d053449cd2ba326365d77,
     type: 2}
 --- !u!1 &519420028
 GameObject:
@@ -1002,5 +1002,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4362530483443936718, guid: f2fc022882e9a614d934cb33e0bafaa1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 231094ed47ab3fa47a7b9e5685b92e11,
+        type: 3}
+    - target: {fileID: 4362530483443936722, guid: f2fc022882e9a614d934cb33e0bafaa1,
+        type: 3}
+      propertyPath: shootSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 52e1b96642531674bb16867da9bb6596,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2fc022882e9a614d934cb33e0bafaa1, type: 3}

@@ -29,17 +29,24 @@ public enum GameState
     GameOver,
 }
 
-
+/// <summary>
+/// [RuntimeInitializeOnLoadMethod()]也能执行Unity Awake等方法
+/// 编辑器在点击输入的时候有问题 ,建议用vscode 改 asset
+/// 增加难度就变成生成敌人的概率把
+/// </summary>
+[System.Serializable]
 public class GameData : ScriptableObject
 {
     public const float xMinBorder = -4.5f, xMaxBorder = 4.5f;
     public const float xSafeMinBorder = -5f, xSafeMaxBorder = 5f;
+    public const float hardBase = 1.005f;
 
-    [Space(10), Header("Player")] public float playerHorSpeed = 0.1f;
+    [Space(10),Header("Player")]
+    public float playerHorSpeed = 0.1f;
     public float playerFlySpeed = 15f;
 
-
-    [Space(10), Header("Tile")] public float startTilePosY = -4;
+    [Space(10), Header("Tile")]
+    public float startTilePosY = -4;
     public TileBase tilePrefab;
     public string tileParent = "TileParent";
     public Sprite[] titleSprite;
@@ -90,20 +97,22 @@ public class GameData : ScriptableObject
         speed = 0.7f,
     };
 
-    [Space(10), Header("Item")] public ItemBase itemPrefab;
+    [Space(10), Header("Item")]
+    public ItemBase itemPrefab;
     public string itemParent = "ItemParent";
     public float hatFlyTime = 1.5f;
     public float rocketFlyTime = 3f;
     public float hatWeight = 0.05f;
     public float rocketWeight = 0.01f;
 
-
-    [Space(10), Header("Money")] public MoneyBase moneyPrefab;
+    [Space(10), Header("Money")]
+    public MoneyBase moneyPrefab;
     public string moneyParent = "MoneyParent";
     public int coinValue = 1;
     public float coinWeight = 0.1f;
 
-    [Space(10), Header("Enemy")] public EnemyBase enemyPrefab;
+    [Space(10), Header("Enemy")]
+    public EnemyBase enemyPrefab;
     public string enemyParent = "EnemyParent";
     public float enemy1Weight = 0.02f;
     public float enemy2Weight = 0.01f;
@@ -113,9 +122,10 @@ public class GameData : ScriptableObject
     public float enemyMinHeight = 1;
     public float enemyMaxHeight = 3;
 
-    [Space(10), Header("Bullet")] public BulletBase bulletPrefab;
+    [Space(10), Header("Bullet")]
+    public BulletBase bulletPrefab;
     public string bulletParent = "BulletParent";
-    public float bulletMoveSpeed = 3f;
+    public float bulletMoveSpeed = 20f;
     public float bulletNextTime = 0.2f;
     public float bulletDestroyTime = 1f;
 
@@ -124,7 +134,10 @@ public class GameData : ScriptableObject
     public float AllMoneyWeight { get; private set; }
     public float AllEnemyWeight { get; private set; }
 
+    public float HardCount { get; private set; } = 1;
+
     public bool IsInit { get; private set; }
+
 
     public GameData OnInit()
     {
@@ -133,27 +146,53 @@ public class GameData : ScriptableObject
             return this;
         }
 
+        GeneratorTileWeight();
+        GeneratorItemWeight();
+        GeneratorMoneyWeight();
+        GeneratorEnemyWeight();
+
+        return this;
+    }
+
+
+    public void GeneratorTileWeight()
+    {
         brokenTile.weight += normalTile.weight;
         onceTile.weight += brokenTile.weight;
         springTile.weight += onceTile.weight;
         moveHorTile.weight += springTile.weight;
         moveVerTile.weight += moveHorTile.weight;
         AllTileWeight = moveVerTile.weight;
+    }
 
+    public void GeneratorItemWeight()
+    {
         hatWeight += 1;
         rocketWeight += hatWeight;
         AllItemWeight = rocketWeight;
+    }
 
+    public void GeneratorMoneyWeight()
+    {
         coinWeight += 1;
         AllMoneyWeight = coinWeight;
-
-        enemy1Weight += 1;
-        enemy2Weight += enemy1Weight;
-        enemy3Weight += enemy2Weight;
-        AllEnemyWeight = enemy3Weight;
-
-        return this;
     }
+
+    public void GeneratorEnemyWeight()
+    {
+        AllEnemyWeight = 1 + enemy1Weight + enemy2Weight + enemy3Weight;
+    }
+
+
+    public void AddHard()
+    {
+        HardCount *= hardBase;
+        enemy1Weight *= hardBase;
+        enemy2Weight *= hardBase;
+        enemy3Weight *= hardBase;
+        GeneratorEnemyWeight();
+    }
+
 
     public GameData Clone()
     {

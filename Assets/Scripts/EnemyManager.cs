@@ -50,16 +50,19 @@ public class EnemyManager
             return EnemyType.None;
         }
 
+        rd -= 1;
         if (rd <= gameData.enemy1Weight)
         {
             return EnemyType.Enemy1;
         }
 
+        rd -= gameData.enemy1Weight;
         if (rd <= gameData.enemy2Weight)
         {
             return EnemyType.Enemy2;
         }
 
+        rd -= gameData.enemy2Weight;
         if (rd <= gameData.enemy3Weight)
         {
             return EnemyType.Enemy3;

@@ -14,10 +14,10 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     private const float recoveryTileY = 12.5f;
 
     /// <summary>
-    /// 游戏数据
+    /// 游戏数据,尽量不要使用
     /// </summary>
     [field:SerializeField]
-    private GameData gameData {  get;  set; }
+    private GameData _gameData {  get;  set; }
 
 
     /// <summary>
@@ -55,9 +55,8 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     protected override void OnAwake()
     {
-        GameData = gameData.Clone();
+        GameData = _gameData.Clone();
         Player = GameObject.Find("Player").GetComponent<Player>();
-
 
         TileManager = new TileManager().OnInit();
         ItemManager = new ItemManager().OnInit();
@@ -66,10 +65,10 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         BulletManager = new BulletManager().OnInit();
         BackgroundManager = new BackgroundManager().OnInit();
 
-
         TileManager.createTileCallback += ItemManager.SpawnItem;
         TileManager.createTileCallback += MoneyManager.SpawnMoney;
         TileManager.createTileCallback += EnemyManager.SpawnEnemy;
+        TileManager.createTileCallback += AddHard;
 
         TileManager.recoveryCallback += ItemManager.RecoveryBindItem;
         TileManager.recoveryCallback += MoneyManager.RecoveryBindMoney;
@@ -78,6 +77,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     private void Start()
     {
         TileManager.CreateStartTiles();
+        Player.Instance.OnInit();
     }
 
     private void Update()
@@ -126,5 +126,10 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     public void GetMoney(int val)
     {
         money += val;
+    }
+
+    public void AddHard(TileBase tile)
+    {
+        GameData.AddHard();
     }
 }

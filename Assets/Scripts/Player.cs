@@ -19,6 +19,7 @@ public class Player : MonoSingleton<Player>
     private bool isFly;
     private Transform bulletPoint;
     private SpriteRenderer spr;
+    private WaitForSeconds waitShootTime;
 
     protected override void OnAwake()
     {
@@ -29,10 +30,16 @@ public class Player : MonoSingleton<Player>
         rocket_Used = transform.Find("Rocket_Used").gameObject;
         bulletPoint = transform.Find("BulletPoint");
         normalSprite = spr.sprite;
+
         var mainCam = Camera.main;
         leftBorder = mainCam.ViewportToWorldPoint(Vector3.zero).x;
         rightBorder = mainCam.ViewportToWorldPoint(Vector3.right).x;
         Pause();
+    }
+
+    public void OnInit()
+    {
+        waitShootTime = new WaitForSeconds(MainGameManager.GameData.bulletNextTime / 2);
     }
 
     public void OnUpdate()
@@ -96,8 +103,19 @@ public class Player : MonoSingleton<Player>
     {
         if (Input.GetMouseButtonDown(0))
         {
-            MainGameManager.Instance.BulletManager.SpawnBullet(bulletPoint.position, Input.mousePosition);
+            var succeed = MainGameManager.Instance.BulletManager.SpawnBullet(bulletPoint.position, Input.mousePosition);
+            if (succeed)
+            {
+                StartCoroutine(ResumeShoot());
+            }
         }
+    }
+
+    private IEnumerator ResumeShoot()
+    {
+        spr.sprite = shootSprite;
+        yield return waitShootTime;
+        spr.sprite = normalSprite;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
