@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainGameManager : MonoSingleton<MainGameManager>
 {
@@ -8,6 +9,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     /// 初始化对象池的大小
     /// </summary>
     private const int initTileSize = 20;
+
     /// <summary>
     /// 回收的Y
     /// </summary>
@@ -16,8 +18,8 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     /// <summary>
     /// 游戏数据,尽量不要使用
     /// </summary>
-    [field:SerializeField]
-    private GameData _gameData {  get;  set; }
+    [field: SerializeField]
+    private GameData _gameData { get; set; }
 
 
     /// <summary>
@@ -26,7 +28,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     private int money = 0;
 
 
-    public TileManager TileManager{ get; private set; }
+    public TileManager TileManager { get; private set; }
     public ItemManager ItemManager { get; private set; }
     public MoneyManager MoneyManager { get; private set; }
     public EnemyManager EnemyManager { get; private set; }
@@ -53,6 +55,16 @@ public class MainGameManager : MonoSingleton<MainGameManager>
     /// </summary>
     public Player Player { get; private set; }
 
+    /// <summary>
+    /// 玩家的最高分
+    /// </summary>
+    private float highPlayerY  = 0;
+
+    /// <summary>
+    /// 玩家Y的分数的补正
+    /// </summary>
+    private float playerOffsetY;
+
     protected override void OnAwake()
     {
         GameData = _gameData.Clone();
@@ -60,7 +72,7 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
         TileManager = new TileManager().OnInit();
         ItemManager = new ItemManager().OnInit();
-        MoneyManager=new MoneyManager().OnInit();
+        MoneyManager = new MoneyManager().OnInit();
         EnemyManager = new EnemyManager().OnInit();
         BulletManager = new BulletManager().OnInit();
         BackgroundManager = new BackgroundManager().OnInit();
@@ -72,6 +84,8 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
         TileManager.recoveryCallback += ItemManager.RecoveryBindItem;
         TileManager.recoveryCallback += MoneyManager.RecoveryBindMoney;
+
+        playerOffsetY = -Player.transform.position.y;
     }
 
     private void Start()
@@ -82,6 +96,11 @@ public class MainGameManager : MonoSingleton<MainGameManager>
 
     private void Update()
     {
+        if (Input.GetKeyUp(KeyCode.F5))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         if (GameState == GameState.Ready)
         {
             if (Input.GetMouseButtonUp(0)
@@ -104,6 +123,17 @@ public class MainGameManager : MonoSingleton<MainGameManager>
         EnemyManager.OnUpdate();
         MoneyManager.OnUpdate();
         BulletManager.OnUpdate();
+
+        UpdateScore();
+    }
+
+    private void UpdateScore()
+    {
+        var nowPosY = Player.transform.position.y + playerOffsetY;
+        if (nowPosY > highPlayerY)
+        {
+            UIManager.Instance.UpdateScore(nowPosY);
+        }
     }
 
     /// <summary>
